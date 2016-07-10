@@ -13,9 +13,9 @@ void PeFile::ReadPeFile() {
     CoffHeader.ReadCoffHeader(in);
     OptHeader.ReadOptionalHeader(in);
 	for (int i = 0; i < CoffHeader.NumberOfSections; i++) {
-		SectionHeader *header = new SectionHeader();
-		header->ReadSectionHeader(in);
-		SecHeaders.push_back(*header);
+		Section *section = new Section();
+		section->ReadSection(in);
+		Sections.push_back(*section);
 	}
 }
 
@@ -25,8 +25,8 @@ void PeFile::DumpPeFile() {
     CoffHeader.DumpCoffHeader();
     OptHeader.DumpOptionalHeader();
 
-	for (auto& secHeader : SecHeaders) {
-		secHeader.DumpSectionHeader();
+	for (auto& secHeader : Sections) {
+		secHeader.DumpSection();
 		cout << endl << "===================" << endl;
 	}
 }

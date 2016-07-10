@@ -7,7 +7,8 @@ OptionalHeader::OptionalHeader() : header{ 0 } {
 
 void OptionalHeader::ReadOptionalHeader(fstream& in)
 {
-    char *ptr = header;
+	char *ptr = (char*)header;
+
 
     copy_from_file(in, &ptr, (char *)&Magic,                       sizeof(Magic));
     copy_from_file(in, &ptr, (char *)&MajorLinkerVersion,          sizeof(MajorLinkerVersion));
@@ -53,7 +54,7 @@ void OptionalHeader::ReadOptionalHeader(fstream& in)
 	for (DWORD i = 0; i < min(NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++)
         copy_from_file(in, &ptr, (char *)&DataDirectory[i],   sizeof(DataDirectoryEntry));
 
-    headerSize = ptr - header;
+    headerSize = ptr - (char*)header;
 }
 
 void OptionalHeader::DumpOptionalHeader()

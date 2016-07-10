@@ -5,9 +5,11 @@
 
 class Section {
     BYTE header[SECTION_HEADER_SIZE];
-
+	vector<BYTE> body;
 	void ReadSectionHeader(fstream& in);
+	void ReadSectionBody(fstream& in);
 	void DumpSectionHeader();
+	void DumpSectionBody();
 public:
 	//
 	// Section Header fields

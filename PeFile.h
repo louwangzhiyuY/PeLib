@@ -13,7 +13,7 @@ public:
     DosHeader DosHeader;
     CoffHeader CoffHeader;
     OptionalHeader OptHeader;
-    vector<Section> SecHeaders;
+    vector<Section> Sections;
 
     PeFile(string pefile);
     void ReadPeFile();

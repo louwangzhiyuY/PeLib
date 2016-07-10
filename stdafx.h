@@ -43,4 +43,4 @@ using namespace std;
 // TODO: reference additional headers your program requires here
 void dump(vector<char>& bytes);
 void copy_from_file(fstream& in, char **buffer, char *field, int nbytes);
-void HexDump(char *buff, DWORD size);
+void HexDump(BYTE *buff, DWORD size);

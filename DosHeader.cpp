@@ -7,7 +7,7 @@ DosHeader::DosHeader() : header{ 0 } {
 
 void DosHeader::ReadDosHeader(fstream& in)
 {
-    char *ptr = header;
+    char *ptr = (char*)header;
 
     copy_from_file(in, &ptr, (char *)&e_magic,    sizeof(e_magic));
     copy_from_file(in, &ptr, (char *)&e_cblp,     sizeof(e_cblp));

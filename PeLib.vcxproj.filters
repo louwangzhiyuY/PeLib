@@ -36,7 +36,7 @@
     <ClInclude Include="OptionalHeader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SectionHeader.h">
+    <ClInclude Include="Section.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClCompile Include="OptionalHeader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SectionHeader.cpp">
+    <ClCompile Include="Section.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

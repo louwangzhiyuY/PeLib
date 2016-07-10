@@ -7,16 +7,12 @@ Section::Section() : header{ 0 } {
 void Section::ReadSection(fstream& in)
 {
 	ReadSectionHeader(in);
-
-	long pos = in.tellp();
-
-	in.seekp(PointerToRawData, ios_base::beg);
-
-
+	ReadSectionBody(in);
 }
+
 void Section::ReadSectionHeader(fstream& in)
 {
-	char *ptr = header;
+	char *ptr = (char *)header;
 
     copy_from_file(in, &ptr, (char *)&Name,                 sizeof(Name));
     copy_from_file(in, &ptr, (char *)&VirtualSize,                 sizeof(VirtualSize));
@@ -29,14 +25,28 @@ void Section::ReadSectionHeader(fstream& in)
     copy_from_file(in, &ptr, (char *)&NumberOfLinenumbers,  sizeof(NumberOfLinenumbers));
     copy_from_file(in, &ptr, (char *)&Characteristics,      sizeof(Characteristics));
 
-	
+}
 
+void Section::ReadSectionBody(fstream& in)
+{
+	long pos = in.tellp();
+	in.seekp(PointerToRawData, ios_base::beg);
+	for (DWORD i = 0; i < SizeOfRawData; i++) {
+		char byte = 0;
+		in.read(&byte, 1);
+		body.push_back(byte & 0xff);
+	}
+	in.seekp(pos, ios_base::beg);
 }
 
 void Section::DumpSection()
 {
 	DumpSectionHeader();
-	
+	int yes;
+	cout << "Dump " << Name << "?";
+	cin >> yes;
+	if (yes)
+		DumpSectionBody();
 }
 
 void Section::DumpSectionHeader()
@@ -52,5 +62,10 @@ void Section::DumpSectionHeader()
     printf("    %-30s: %x\n", "NumberOfRelocations", NumberOfRelocations);
     printf("    %-30s: %x\n", "NumberOfLinenumbers", NumberOfLinenumbers);
     printf("    %-30s: %lx\n", "Characteristics", Characteristics);
+}
 
+void Section::DumpSectionBody()
+{
+	cout << "Dumping Section..." << endl;
+	HexDump(body.data(), body.size());
 }

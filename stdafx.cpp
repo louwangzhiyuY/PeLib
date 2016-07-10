@@ -29,7 +29,7 @@ void copy_from_file(fstream& in, char **buffer, char *field, int nbytes)
     *buffer = *buffer + nbytes;
 }
 
-void HexDump(char *buf, DWORD size)
+void HexDump(BYTE *buf, DWORD size)
 {
 	vector<BYTE> left;
 	vector<BYTE> right;
