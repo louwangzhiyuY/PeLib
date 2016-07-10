@@ -1,48 +1,76 @@
 #include "stdafx.h"
 #include "OptionalHeader.h"
 
+vector<Flag> SubsystemFlags = {
+	{0, "IMAGE_SUBSYSTEM_UNKNOWN"},
+	{1, "IMAGE_SUBSYSTEM_NATIVE"},
+	{2, "IMAGE_SUBSYSTEM_WINDOWS_GUI"},
+	{3, "IMAGE_SUBSYSTEM_WINDOWS_CUI"},
+	{7, "IMAGE_SUBSYSTEM_POSIX_CUI"},
+	{9, "IMAGE_SUBSYSTEM_WINDOWS_CE_GUI"},
+	{10, "IMAGE_SUBSYSTEM_EFI_APPLICATION"},
+	{11, "IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER"},
+	{12, "IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER"},
+	{13, "IMAGE_SUBSYSTEM_EFI_ROM"},
+	{14, "IMAGE_SUBSYSTEM_XBOX"},
+};
+
+vector<Flag> DllCharacteristicsFlags = {
+	{0x0020, "IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA"},
+	{0x0040, "IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE"},
+	{0x0080, "IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY"},
+	{0x0100, "IMAGE_DLLCHARACTERISTICS_NX_COMPAT"},
+	{0x0200, "IMAGE_DLLCHARACTERISTICS_NO_ISOLATION"},
+	{0x0400, "IMAGE_DLLCHARACTERISTICS_NO_SEH"},
+	{0x0800, "IMAGE_DLLCHARACTERISTICS_NO_BIND"},
+	{0x1000, "IMAGE_DLLCHARACTERISTICS_APPCONTAINER"},
+	{0x2000, "IMAGE_DLLCHARACTERISTICS_WDM_DRIVER"},
+	{0x4000, "IMAGE_DLLCHARACTERISTICS_GUARD_CF"},
+	{0x8000, "IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE"},
+};
+
 OptionalHeader::OptionalHeader() : header{ 0 } {
 
 }
 
 void OptionalHeader::ReadOptionalHeader(fstream& in)
 {
-	char *ptr = (char*)header;
+	BYTE *ptr = header;
 
 
-    copy_from_file(in, &ptr, (char *)&Magic,                       sizeof(Magic));
-    copy_from_file(in, &ptr, (char *)&MajorLinkerVersion,          sizeof(MajorLinkerVersion));
-    copy_from_file(in, &ptr, (char *)&MinorLinkerVersion,          sizeof(MinorLinkerVersion));
-    copy_from_file(in, &ptr, (char *)&SizeOfCode,                  sizeof(SizeOfCode));
-    copy_from_file(in, &ptr, (char *)&SizeOfInitializedData,       sizeof(SizeOfInitializedData));
-    copy_from_file(in, &ptr, (char *)&SizeOfUninitializedData,     sizeof(SizeOfUninitializedData));
-    copy_from_file(in, &ptr, (char *)&AddressOfEntryPoint,         sizeof(AddressOfEntryPoint));
-    copy_from_file(in, &ptr, (char *)&BaseOfCode,                  sizeof(BaseOfCode));
+    copy_from_file(in, &ptr, (BYTE *)&Magic,                       sizeof(Magic));
+    copy_from_file(in, &ptr, (BYTE *)&MajorLinkerVersion,          sizeof(MajorLinkerVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MinorLinkerVersion,          sizeof(MinorLinkerVersion));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfCode,                  sizeof(SizeOfCode));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfInitializedData,       sizeof(SizeOfInitializedData));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfUninitializedData,     sizeof(SizeOfUninitializedData));
+    copy_from_file(in, &ptr, (BYTE *)&AddressOfEntryPoint,         sizeof(AddressOfEntryPoint));
+    copy_from_file(in, &ptr, (BYTE *)&BaseOfCode,                  sizeof(BaseOfCode));
 
     if (Magic == 0x10b) // PE32
-        copy_from_file(in, &ptr, (char *)&BaseOfData, sizeof(BaseOfData));
+        copy_from_file(in, &ptr, (BYTE *)&BaseOfData, sizeof(BaseOfData));
 
-    copy_from_file(in, &ptr, (char *)&ImageBase,                   Magic == 0x10b ? 4 : 8);
-    copy_from_file(in, &ptr, (char *)&SectionAlignment,            sizeof(SectionAlignment));
-    copy_from_file(in, &ptr, (char *)&FileAlignment,               sizeof(FileAlignment));
-    copy_from_file(in, &ptr, (char *)&MajorOperatingSystemVersion, sizeof(MajorOperatingSystemVersion));
-    copy_from_file(in, &ptr, (char *)&MinorOperatingSystemVersion, sizeof(MinorOperatingSystemVersion));
-    copy_from_file(in, &ptr, (char *)&MajorImageVersion,           sizeof(MajorImageVersion));
-    copy_from_file(in, &ptr, (char *)&MinorImageVersion,           sizeof(MinorImageVersion));
-    copy_from_file(in, &ptr, (char *)&MajorSubsystemVersion,       sizeof(MajorSubsystemVersion));
-    copy_from_file(in, &ptr, (char *)&MinorSubsystemVersion,       sizeof(MinorSubsystemVersion));
-    copy_from_file(in, &ptr, (char *)&Win32VersionValue,           sizeof(Win32VersionValue));
-    copy_from_file(in, &ptr, (char *)&SizeOfImage,                 sizeof(SizeOfImage));
-    copy_from_file(in, &ptr, (char *)&SizeOfHeaders,               sizeof(SizeOfHeaders));
-    copy_from_file(in, &ptr, (char *)&CheckSum,                    sizeof(CheckSum));
-    copy_from_file(in, &ptr, (char *)&Subsystem,                   sizeof(Subsystem));
-    copy_from_file(in, &ptr, (char *)&DllCharacteristics,          sizeof(DllCharacteristics));
-    copy_from_file(in, &ptr, (char *)&SizeOfStackReserve,          Magic == 0x10b ? 4 : 8);
-    copy_from_file(in, &ptr, (char *)&SizeOfStackCommit,           Magic == 0x10b ? 4 : 8);
-    copy_from_file(in, &ptr, (char *)&SizeOfHeapReserve,           Magic == 0x10b ? 4 : 8);
-    copy_from_file(in, &ptr, (char *)&SizeOfHeapCommit,            Magic == 0x10b ? 4 : 8);
-    copy_from_file(in, &ptr, (char *)&LoaderFlags,                 sizeof(LoaderFlags));
-    copy_from_file(in, &ptr, (char *)&NumberOfRvaAndSizes,         sizeof(NumberOfRvaAndSizes));
+    copy_from_file(in, &ptr, (BYTE *)&ImageBase,                   Magic == 0x10b ? 4 : 8);
+    copy_from_file(in, &ptr, (BYTE *)&SectionAlignment,            sizeof(SectionAlignment));
+    copy_from_file(in, &ptr, (BYTE *)&FileAlignment,               sizeof(FileAlignment));
+    copy_from_file(in, &ptr, (BYTE *)&MajorOperatingSystemVersion, sizeof(MajorOperatingSystemVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MinorOperatingSystemVersion, sizeof(MinorOperatingSystemVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MajorImageVersion,           sizeof(MajorImageVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MinorImageVersion,           sizeof(MinorImageVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MajorSubsystemVersion,       sizeof(MajorSubsystemVersion));
+    copy_from_file(in, &ptr, (BYTE *)&MinorSubsystemVersion,       sizeof(MinorSubsystemVersion));
+    copy_from_file(in, &ptr, (BYTE *)&Win32VersionValue,           sizeof(Win32VersionValue));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfImage,                 sizeof(SizeOfImage));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfHeaders,               sizeof(SizeOfHeaders));
+    copy_from_file(in, &ptr, (BYTE *)&CheckSum,                    sizeof(CheckSum));
+    copy_from_file(in, &ptr, (BYTE *)&Subsystem,                   sizeof(Subsystem));
+    copy_from_file(in, &ptr, (BYTE *)&DllCharacteristics,          sizeof(DllCharacteristics));
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfStackReserve,          Magic == 0x10b ? 4 : 8);
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfStackCommit,           Magic == 0x10b ? 4 : 8);
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfHeapReserve,           Magic == 0x10b ? 4 : 8);
+    copy_from_file(in, &ptr, (BYTE *)&SizeOfHeapCommit,            Magic == 0x10b ? 4 : 8);
+    copy_from_file(in, &ptr, (BYTE *)&LoaderFlags,                 sizeof(LoaderFlags));
+    copy_from_file(in, &ptr, (BYTE *)&NumberOfRvaAndSizes,         sizeof(NumberOfRvaAndSizes));
 
     // Read data directory entries - They refer to specific tables which are contained in the sections
     // following these entries.
@@ -52,9 +80,9 @@ void OptionalHeader::ReadOptionalHeader(fstream& in)
     // identify the size of the array, not the number of valid entries in the
     // array.
 	for (DWORD i = 0; i < min(NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++)
-        copy_from_file(in, &ptr, (char *)&DataDirectory[i],   sizeof(DataDirectoryEntry));
+        copy_from_file(in, &ptr, (BYTE *)&DataDirectory[i],   sizeof(DataDirectoryEntry));
 
-    headerSize = ptr - (char*)header;
+    headerSize = ptr - (BYTE*)header;
 }
 
 void OptionalHeader::DumpOptionalHeader()
@@ -86,8 +114,8 @@ void OptionalHeader::DumpOptionalHeader()
     printf("    %-30s: %lx\n",   "SizeOfImage",                 SizeOfImage);
     printf("    %-30s: %lx\n",   "SizeOfHeaders",               SizeOfHeaders);
     printf("    %-30s: %lx\n",   "CheckSum",                    CheckSum);
-    printf("    %-30s: %x\n",   "Subsystem",                   Subsystem);
-    printf("    %-30s: %x\n",   "DllCharacteristics",          DllCharacteristics);
+    printf("    %-30s: %s\n",   "Subsystem",                   FlagToDescription(SubsystemFlags, Subsystem, FALSE).c_str());
+    printf("    %-30s: %s\n",   "DllCharacteristics",          FlagToDescription(DllCharacteristicsFlags, DllCharacteristics, TRUE).c_str());
     printf("    %-30s: %llx\n", "SizeOfStackReserve",          SizeOfStackReserve);
     printf("    %-30s: %llx\n", "SizeOfStackCommit",           SizeOfStackCommit);
     printf("    %-30s: %llx\n", "SizeOfHeapReserve",           SizeOfHeapReserve);

@@ -14,33 +14,21 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 #include <windows.h>
 #include <intrin.h>
 
 using namespace std;
 
-#if 0
-#define COPY_SIZE_BUFFER_TO_FIELD_AND_MOVE_BUFFER(buffer, field, size) \
-    do {\
-        copy_bytes(buffer, (char *)&field, size);\
-        buffer += size;\
-    } while (0)
+struct Flag
+{
+	DWORD flag;
+	char *value;
+};
 
-#define COPY_BUFFER_TO_FIELD_AND_MOVE_BUFFER(buffer, field) \
-    do {\
-        copy_bytes(buffer, (char *)&field, sizeof(field));\
-        buffer += sizeof(field);\
-    } while (0)
-
-#define COPY_FIELD_TO_BUFFER_AND_MOVE_BUFFER(buffer, field) \
-    do {\
-        copy_bytes((char *)&field, buffer, sizeof(field));\
-        buffer += sizeof(field);\
-    } while (0)
-#endif
-
-// TODO: reference additional headers your program requires here
 void dump(vector<char>& bytes);
-void copy_from_file(fstream& in, char **buffer, char *field, int nbytes);
+void copy_from_file(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
 void HexDump(BYTE *buff, DWORD size);
+
+string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseFlag);

@@ -20,9 +20,9 @@ void dump(vector<char>& bytes)
     }
 }
 
-void copy_from_file(fstream& in, char **buffer, char *field, int nbytes)
+void copy_from_file(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
 {
-    in.read(*buffer, nbytes);
+    in.read((char *)*buffer, nbytes);
     for (int i = 0; i < nbytes; i++)
         field[i] = (*buffer)[i] & 0xff;
 
@@ -50,5 +50,33 @@ void HexDump(BYTE *buf, DWORD size)
 			left.clear();
 			right.clear();
 		}
+	}
+}
+
+
+string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseFlag)
+{
+	string description;
+	stringstream ss;
+	ss << hex << flag << " -> ";
+
+	description += ss.str();
+
+	if (bitwiseFlag) {
+		for (auto &f : flags) {
+			if (f.flag & flag) {
+				description += f.value;
+				description += "|";
+			}
+		}
+		return description;
+	}
+	else {
+		auto iter = find_if(flags.begin(), flags.end(), [&flag](Flag f) {
+			return f.flag == flag;
+		});
+		if (iter != flags.end())
+			description += iter->value;
+		return description;
 	}
 }
