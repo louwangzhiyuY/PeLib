@@ -17,6 +17,8 @@ void PeFile::ReadPeFile() {
 		section->ReadSection(in);
 		Sections.push_back(*section);
 	}
+	// Read data directory content from their respective sections
+	OptHeader.LocateAndReadDataDirectoryContents(in, Sections);
 }
 
 void PeFile::DumpPeFile() {

@@ -1,13 +1,26 @@
 #pragma once
 #include "stdafx.h"
+#include "Section.h"
 
 #define OPTIONAL_HEADER_SIZE 1024
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
 class DataDirectoryEntry {
 public:
+    // Fields in PE
     DWORD VirtualAddress;
     DWORD Size;
+
+    // Computed Fields
+    // Name of the directory entry
+    string DirectoryEntryName;
+    // file offset calculated from section
+    DWORD DataDirectoryFileOffset;
+    // Content of the actual data directory
+    vector<BYTE> DataDirectoryContent;
+    // section in which the data directory was found
+    int SectionIndex;
+
 };
 
 class OptionalHeader {
@@ -45,9 +58,10 @@ public:
     DWORD64  SizeOfHeapCommit;
     DWORD    LoaderFlags;
     DWORD    NumberOfRvaAndSizes;
-    DataDirectoryEntry DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
+    DataDirectoryEntry DataDirectories[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 
     OptionalHeader();
     void ReadOptionalHeader(fstream& in);
+    void LocateAndReadDataDirectoryContents(fstream& in, const vector<Section>& sections);
     void DumpOptionalHeader();
 };

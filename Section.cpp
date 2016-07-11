@@ -39,21 +39,22 @@ vector<Flag> SectionCharacteristicsFlags = {
 	{0x80000000, "IMAGE_SCN_MEM_WRITE"},
 };
 
-Section::Section() : header{ 0 } {
+Section::Section() : sectionHeaderContent{ 0 } {
 
 }
+
 void Section::ReadSection(fstream& in)
 {
 	ReadSectionHeader(in);
-	ReadSectionBody(in);
+	ReadSectionContent(in);
 }
 
 void Section::ReadSectionHeader(fstream& in)
 {
-	BYTE *ptr = header;
+	BYTE *ptr = sectionHeaderContent;
 
     copy_from_file(in, &ptr, (BYTE *)&Name,                 sizeof(Name));
-    copy_from_file(in, &ptr, (BYTE *)&VirtualSize,                 sizeof(VirtualSize));
+    copy_from_file(in, &ptr, (BYTE *)&VirtualSize,          sizeof(VirtualSize));
     copy_from_file(in, &ptr, (BYTE *)&VirtualAddress,       sizeof(VirtualAddress));
     copy_from_file(in, &ptr, (BYTE *)&SizeOfRawData,        sizeof(SizeOfRawData));
     copy_from_file(in, &ptr, (BYTE *)&PointerToRawData,     sizeof(PointerToRawData));
@@ -65,14 +66,14 @@ void Section::ReadSectionHeader(fstream& in)
 
 }
 
-void Section::ReadSectionBody(fstream& in)
+void Section::ReadSectionContent(fstream& in)
 {
 	streampos pos = in.tellp();
 	in.seekp(PointerToRawData, ios_base::beg);
 	for (DWORD i = 0; i < SizeOfRawData; i++) {
 		char byte = 0;
 		in.read(&byte, 1);
-		body.push_back(byte & 0xff);
+		sectionContent.push_back(byte & 0xff);
 	}
 	in.seekp(pos, ios_base::beg);
 }
@@ -80,11 +81,7 @@ void Section::ReadSectionBody(fstream& in)
 void Section::DumpSection()
 {
 	DumpSectionHeader();
-	int yes;
-	cout << "Dump " << Name << "?";
-	cin >> yes;
-	if (yes)
-		DumpSectionBody();
+	DumpSectionBody();
 }
 
 void Section::DumpSectionHeader()
@@ -104,6 +101,6 @@ void Section::DumpSectionHeader()
 
 void Section::DumpSectionBody()
 {
-	cout << "Dumping Section..." << endl;
-	HexDump(body.data(), body.size());
+	cout << "Dumping Section...first few bytes" << endl;
+	HexDump(sectionContent.data(), min (sectionContent.size(), 32));
 }
