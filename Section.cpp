@@ -87,16 +87,16 @@ void Section::DumpSection()
 void Section::DumpSectionHeader()
 {
 	//dump(vector<char>(header, header + SECTION_HEADER_SIZE));
-	printf("    %-30s: %s\n", "Name", (char *)&Name);
-    printf("    %-30s: %lx\n", "VirtualSize", VirtualSize);
-    printf("    %-30s: %lx\n", "VirtualAddress", VirtualAddress);
-    printf("    %-30s: %lx\n", "SizeOfRawData", SizeOfRawData);
-    printf("    %-30s: %lx\n", "PointerToRawData", PointerToRawData);
+	printf("    %-30s: %s\n",  "Name",                 (char *)&Name);
+    printf("    %-30s: %lx\n", "VirtualSize",          VirtualSize);
+    printf("    %-30s: %lx\n", "VirtualAddress",       VirtualAddress);
+    printf("    %-30s: %lx\n", "SizeOfRawData",        SizeOfRawData);
+    printf("    %-30s: %lx\n", "PointerToRawData",     PointerToRawData);
     printf("    %-30s: %lx\n", "PointerToRelocations", PointerToRelocations);
     printf("    %-30s: %lx\n", "PointerToLinenumbers", PointerToLinenumbers);
-    printf("    %-30s: %x\n", "NumberOfRelocations", NumberOfRelocations);
-    printf("    %-30s: %x\n", "NumberOfLinenumbers", NumberOfLinenumbers);
-    printf("    %-30s: %s\n", "Characteristics", FlagToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
+    printf("    %-30s: %x\n",  "NumberOfRelocations",  NumberOfRelocations);
+    printf("    %-30s: %x\n",  "NumberOfLinenumbers",  NumberOfLinenumbers);
+    printf("    %-30s: %s\n",  "Characteristics",      FlagToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
 }
 
 void Section::DumpSectionBody()
