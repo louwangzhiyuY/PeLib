@@ -14,7 +14,10 @@ public:
     CoffHeader CoffHeader;
     OptionalHeader OptHeader;
     vector<Section> Sections;
-
+    //TODO: Implement move semantics in Section
+    Section* LocateInSection(DWORD rva);
+    DWORD PeFile::RvaToFa(DWORD Rva);
+    // DWORD RvaToFa(DWORD rva);
     PeFile(string pefile);
     void ReadPeFile();
     void DumpPeFile();

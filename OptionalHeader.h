@@ -5,6 +5,25 @@
 #define OPTIONAL_HEADER_SIZE 1024
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
+enum DataDirectoryType {
+    Export = 0,
+    Import,
+    Resource,
+    Exception,
+    Certificate,
+    BaseRelocation,
+    Debug,
+    Architecture,
+    GlobalPtr,
+    TLS,
+    LoadConfig,
+    BoundImport,
+    IAT,
+    DelayImportDescriptor,
+    CLRRuntimeHeader,
+    Reserved,
+};
+
 class DataDirectoryEntry {
 public:
     // Fields in PE
@@ -21,6 +40,7 @@ public:
     // section in which the data directory was found
     int SectionIndex;
 
+    DataDirectoryType Type;
 };
 
 class OptionalHeader {

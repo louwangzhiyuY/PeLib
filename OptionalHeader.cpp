@@ -30,17 +30,17 @@ vector<Flag> DllCharacteristicsFlags = {
 };
 
 vector<string> DataDirectoryNames = {
-	"Export Table",
-	"Import Table",
-	"Resource Table",
-	"Exception Table",
-	"Certificate Table",
-	"Base Relocation Table",
+	"Export",
+	"Import",
+	"Resource",
+	"Exception",
+	"Certificate",
+	"Base Relocation",
 	"Debug",
 	"Reserved",
 	"Global Ptr",
-	"TLS Table",
-	"Load Config Table",
+	"TLS",
+	"Load Config",
 	"Bound Import",
 	"IAT",
 	"Delay Import Descriptor",
@@ -55,7 +55,6 @@ OptionalHeader::OptionalHeader() : header{ 0 } {
 void OptionalHeader::ReadOptionalHeader(fstream& in)
 {
 	BYTE *ptr = header;
-
 
 	copy_from_file(in, &ptr, (BYTE *)&Magic,                       sizeof(Magic));
 	copy_from_file(in, &ptr, (BYTE *)&MajorLinkerVersion,          sizeof(MajorLinkerVersion));
@@ -102,6 +101,7 @@ void OptionalHeader::ReadOptionalHeader(fstream& in)
 		copy_from_file(in, &ptr, (BYTE *)&(DataDirectories[i].VirtualAddress), sizeof(DataDirectories[i].VirtualAddress));
 		copy_from_file(in, &ptr, (BYTE *)&(DataDirectories[i].Size), sizeof(DataDirectories[i].Size));
 		DataDirectories[i].DirectoryEntryName = DataDirectoryNames[i];
+        DataDirectories[i].Type = static_cast<DataDirectoryType>(i);
 	}
 
 	headerSize = ptr - (BYTE*)header;
