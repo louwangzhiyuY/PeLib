@@ -3,8 +3,7 @@
 
 #define SECTION_HEADER_SIZE 40
 
-class Section {
-public:
+struct Section {
     // Computed Fields
     // This is just all section header fields as a block
     BYTE sectionHeaderContent[SECTION_HEADER_SIZE];

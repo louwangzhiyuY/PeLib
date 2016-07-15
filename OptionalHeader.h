@@ -47,8 +47,7 @@ public:
     DataDirectoryType Type;
 };
 
-class OptionalHeader {
-public:
+struct OptionalHeader {
     BYTE header[OPTIONAL_HEADER_SIZE];
     DWORD64 headerSize = 0;
 

@@ -3,8 +3,7 @@
 
 #define DOS_HEADER_SIZE 64
 
-class DosHeader {
-public:
+struct DosHeader {
     BYTE header[DOS_HEADER_SIZE];
 
 

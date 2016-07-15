@@ -3,10 +3,8 @@
 
 #define COFF_HEADER_SIZE 24
 
-class CoffHeader {
-public:
+struct CoffHeader {
     BYTE header[COFF_HEADER_SIZE];
-
 
 
     ULONG Signature;

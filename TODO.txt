@@ -1,0 +1,1 @@
+* Implement move semantics for each structure if applicable

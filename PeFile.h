@@ -8,22 +8,22 @@
 
 
 class PeFile {
-    WCHAR fileName;
+    string fileName;
     fstream in;
-    OptionalHeader* ReadOptionalHeader();
+    OptionalHeader ReadOptionalHeader();
     void LocateAndReadDataDirectoryContents(const vector<Section>& sections);
-    CoffHeader* ReadCoffHeader();
-    DosHeader* ReadDosHeader();
-    Section* ReadSection();
-    void ReadSectionHeader(Section *sec);
-    void ReadSectionContent(Section *sec);
+    CoffHeader ReadCoffHeader();
+    DosHeader ReadDosHeader();
+    Section ReadSection();
+    void ReadSectionHeader(Section& sec);
+    void ReadSectionContent(Section& sec);
 public:
-    DosHeader* dosHeader;
-    CoffHeader* coffHeader;
-    OptionalHeader* optHeader;
+    DosHeader dosHeader;
+    CoffHeader coffHeader;
+    OptionalHeader optHeader;
     vector<Section> sections;
     //TODO: Implement move semantics in Section
-    Section* LocateInSection(DWORD rva);
+    Section LocateInSection(DWORD rva);
     DWORD PeFile::RvaToFa(DWORD Rva);
     // DWORD RvaToFa(DWORD rva);
     PeFile(string pefile);
