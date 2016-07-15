@@ -46,24 +46,6 @@ vector<Flag> CharacteristicsFlags = {
 	{0x8000, "IMAGE_FILE_BYTES_REVERSED_HI"},
 };
 
-CoffHeader::CoffHeader() : header{ 0 } {
-
-}
-
-void CoffHeader::ReadCoffHeader(fstream& in)
-{
-    BYTE *ptr = header;
-
-    copy_from_file(in, &ptr, (BYTE *)&Signature,            sizeof(Signature));
-    copy_from_file(in, &ptr, (BYTE *)&Machine,              sizeof(Machine));
-    copy_from_file(in, &ptr, (BYTE *)&NumberOfSections,     sizeof(NumberOfSections));
-    copy_from_file(in, &ptr, (BYTE *)&TimeDateStamp,        sizeof(TimeDateStamp));
-    copy_from_file(in, &ptr, (BYTE *)&PointerToSymbolTable, sizeof(PointerToSymbolTable));
-    copy_from_file(in, &ptr, (BYTE *)&NumberOfSymbols,      sizeof(NumberOfSymbols));
-    copy_from_file(in, &ptr, (BYTE *)&SizeOfOptionalHeader, sizeof(SizeOfOptionalHeader));
-    copy_from_file(in, &ptr, (BYTE *)&Characteristics,      sizeof(Characteristics));
-}
-
 void CoffHeader::DumpCoffHeader()
 {
     cout << "Dumping Coff Header" << endl;

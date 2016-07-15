@@ -1,35 +1,6 @@
 #include "stdafx.h"
 #include "DosHeader.h"
 
-DosHeader::DosHeader() : header{ 0 } {
-
-}
-
-void DosHeader::ReadDosHeader(fstream& in)
-{
-    BYTE *ptr = header;
-
-    copy_from_file(in, &ptr, (BYTE *)&e_magic,    sizeof(e_magic));
-    copy_from_file(in, &ptr, (BYTE *)&e_cblp,     sizeof(e_cblp));
-    copy_from_file(in, &ptr, (BYTE *)&e_cp,       sizeof(e_cp));
-    copy_from_file(in, &ptr, (BYTE *)&e_crlc,     sizeof(e_crlc));
-    copy_from_file(in, &ptr, (BYTE *)&e_cparhdr,  sizeof(e_cparhdr));
-    copy_from_file(in, &ptr, (BYTE *)&e_minalloc, sizeof(e_minalloc));
-    copy_from_file(in, &ptr, (BYTE *)&e_maxalloc, sizeof(e_maxalloc));
-    copy_from_file(in, &ptr, (BYTE *)&e_ss,       sizeof(e_ss));
-    copy_from_file(in, &ptr, (BYTE *)&e_sp,       sizeof(e_sp));
-    copy_from_file(in, &ptr, (BYTE *)&e_csum,     sizeof(e_csum));
-    copy_from_file(in, &ptr, (BYTE *)&e_ip,       sizeof(e_ip));
-    copy_from_file(in, &ptr, (BYTE *)&e_cs,       sizeof(e_cs));
-    copy_from_file(in, &ptr, (BYTE *)&e_lfarlc,   sizeof(e_lfarlc));
-    copy_from_file(in, &ptr, (BYTE *)&e_ovno,     sizeof(e_ovno));
-    copy_from_file(in, &ptr, (BYTE *)&e_res,      sizeof(e_res));
-    copy_from_file(in, &ptr, (BYTE *)&e_oemid,    sizeof(e_oemid));
-    copy_from_file(in, &ptr, (BYTE *)&e_oeminfo,  sizeof(e_oeminfo));
-    copy_from_file(in, &ptr, (BYTE *)&e_res2,     sizeof(e_res2));
-    copy_from_file(in, &ptr, (BYTE *)&e_lfanew,   sizeof(e_lfanew));
-}
-
 void DosHeader::DumpDosHeader()
 {
     //dump(vector<char>(header, header + DOS_HEADER_SIZE));

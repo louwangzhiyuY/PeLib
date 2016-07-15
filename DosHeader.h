@@ -4,8 +4,12 @@
 #define DOS_HEADER_SIZE 64
 
 class DosHeader {
-    BYTE header[DOS_HEADER_SIZE];
 public:
+    BYTE header[DOS_HEADER_SIZE];
+
+
+
+
     WORD   e_magic;                     // Magic number
     WORD   e_cblp;                      // Bytes on last page of file
     WORD   e_cp;                        // Pages in file
@@ -25,7 +29,5 @@ public:
     WORD   e_oeminfo;                   // OEM information; e_oemid specific
     WORD   e_res2[10];                  // Reserved words
     ULONG  e_lfanew;                    // File address of new exe header
-    DosHeader();
-    void ReadDosHeader(fstream& in);
     void DumpDosHeader();
 };

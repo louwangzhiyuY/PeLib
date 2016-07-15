@@ -5,6 +5,10 @@
 #define OPTIONAL_HEADER_SIZE 1024
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
+extern vector<Flag> SubsystemFlags;
+extern vector<Flag> DllCharacteristicsFlags;
+extern vector<string> DataDirectoryNames;
+
 enum DataDirectoryType {
     Export = 0,
     Import,
@@ -44,9 +48,14 @@ public:
 };
 
 class OptionalHeader {
+public:
     BYTE header[OPTIONAL_HEADER_SIZE];
     DWORD64 headerSize = 0;
-public:
+
+
+
+
+
     WORD     Magic;
     BYTE     MajorLinkerVersion;
     BYTE     MinorLinkerVersion;
@@ -80,8 +89,5 @@ public:
     DWORD    NumberOfRvaAndSizes;
     DataDirectoryEntry DataDirectories[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 
-    OptionalHeader();
-    void ReadOptionalHeader(fstream& in);
-    void LocateAndReadDataDirectoryContents(fstream& in, const vector<Section>& sections);
     void DumpOptionalHeader();
 };
