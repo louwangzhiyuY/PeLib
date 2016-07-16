@@ -4,8 +4,11 @@
 #define COFF_HEADER_SIZE 24
 
 struct CoffHeader {
+    // Computed Fields
+
     BYTE header[COFF_HEADER_SIZE];
 
+    // Fields in PE
 
     ULONG Signature;
     WORD  Machine;

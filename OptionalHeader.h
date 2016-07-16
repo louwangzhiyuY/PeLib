@@ -28,32 +28,32 @@ enum DataDirectoryType {
     Reserved,
 };
 
-class DataDirectoryEntry {
-public:
-    // Fields in PE
-    DWORD VirtualAddress;
-    DWORD Size;
-
+struct DataDirectoryEntry {
     // Computed Fields
-    // Name of the directory entry
+
     string DirectoryEntryName;
     // file offset calculated from section
     DWORD DataDirectoryFileOffset;
     // Content of the actual data directory
     vector<BYTE> DataDirectoryContent;
-    // section in which the data directory was found
+    // Section in which the data directory was found
     int SectionIndex;
 
     DataDirectoryType Type;
+
+    // Fields in PE
+
+    DWORD VirtualAddress;
+    DWORD Size;
 };
 
 struct OptionalHeader {
+    // Computed Fields
+
     BYTE header[OPTIONAL_HEADER_SIZE];
     DWORD64 headerSize = 0;
 
-
-
-
+    // Fields in PE
 
     WORD     Magic;
     BYTE     MajorLinkerVersion;

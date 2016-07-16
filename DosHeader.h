@@ -4,10 +4,11 @@
 #define DOS_HEADER_SIZE 64
 
 struct DosHeader {
+    // Computed Fields
+
     BYTE header[DOS_HEADER_SIZE];
 
-
-
+    // Fields in PE
 
     WORD   e_magic;                     // Magic number
     WORD   e_cblp;                      // Bytes on last page of file

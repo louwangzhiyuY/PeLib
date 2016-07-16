@@ -8,6 +8,15 @@
 
 
 class PeFile {
+public:
+    //TODO: Implement move semantics in Section
+    DWORD RvaToFa(DWORD rva);
+    PeFile(string pefile);
+    Section LocateInSection(DWORD rva);
+    void DumpPeFile();
+    void ReadPeFile();
+
+private:
     CoffHeader ReadCoffHeader();
     DosHeader ReadDosHeader();
     OptionalHeader ReadOptionalHeader();
@@ -22,11 +31,4 @@ class PeFile {
     OptionalHeader  m_optHeader;
     vector<Section> m_sections;
 
-public:
-    //TODO: Implement move semantics in Section
-    DWORD RvaToFa(DWORD rva);
-    PeFile(string pefile);
-    Section LocateInSection(DWORD rva);
-    void DumpPeFile();
-    void ReadPeFile();
 };

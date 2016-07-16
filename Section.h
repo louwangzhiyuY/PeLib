@@ -5,6 +5,7 @@
 
 struct Section {
     // Computed Fields
+
     // This is just all section header fields as a block
     BYTE sectionHeaderContent[SECTION_HEADER_SIZE];
     // This is computed from PointerToRawData file offset
@@ -14,8 +15,8 @@ struct Section {
     void DumpSectionBody();
 
 
+    // Fields in PE
 
-	// Section Header PE fields
     BYTE    Name[IMAGE_SIZEOF_SHORT_NAME];
     DWORD   VirtualSize;
     DWORD   VirtualAddress;
