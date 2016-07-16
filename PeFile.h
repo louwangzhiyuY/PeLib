@@ -6,8 +6,8 @@
 #include "OptionalHeader.h"
 #include "Section.h"
 
-
-class PeFile {
+class PeFile
+{
 public:
     //TODO: Implement move semantics in Section
     DWORD RvaToFa(DWORD rva);
@@ -17,18 +17,17 @@ public:
     void ReadPeFile();
 
 private:
-    CoffHeader ReadCoffHeader();
-    DosHeader ReadDosHeader();
-    OptionalHeader ReadOptionalHeader();
-    Section ReadSection();
+    void ReadDosHeader();
+    void ReadCoffHeader();
+    void ReadOptionalHeader();
+    void ReadSection(Section& section);
     void LocateAndReadDataDirectoryContents(const vector<Section>& sections);
     void ReadSectionContent(Section& section);
     void ReadSectionHeader(Section& section);
 
-    CoffHeader      m_coffHeader;
-    DosHeader       m_dosHeader;
     fstream         m_peStream;
-    OptionalHeader  m_optHeader;
+    DosHeader       m_dosHeader;
+    CoffHeader      m_coffHeader;
+    OptionalHeader  m_optionalHeader;
     vector<Section> m_sections;
-
 };

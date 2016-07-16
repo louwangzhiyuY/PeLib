@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-#include "Section.h"
 
 #define OPTIONAL_HEADER_SIZE 1024
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
@@ -9,7 +8,8 @@ extern vector<Flag> SubsystemFlags;
 extern vector<Flag> DllCharacteristicsFlags;
 extern vector<string> DataDirectoryNames;
 
-enum DataDirectoryType {
+enum DataDirectoryType
+{
     Export = 0,
     Import,
     Resource,
@@ -28,7 +28,8 @@ enum DataDirectoryType {
     Reserved,
 };
 
-struct DataDirectoryEntry {
+struct DataDirectoryEntry
+{
     // Computed Fields
 
     string DirectoryEntryName;
@@ -36,8 +37,6 @@ struct DataDirectoryEntry {
     DWORD DataDirectoryFileOffset;
     // Content of the actual data directory
     vector<BYTE> DataDirectoryContent;
-    // Section in which the data directory was found
-    int SectionIndex;
 
     DataDirectoryType Type;
 
@@ -47,7 +46,8 @@ struct DataDirectoryEntry {
     DWORD Size;
 };
 
-struct OptionalHeader {
+struct OptionalHeader
+{
     // Computed Fields
 
     BYTE Header[OPTIONAL_HEADER_SIZE];

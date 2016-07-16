@@ -1,6 +1,3 @@
-// pe.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "PeFile.h"
 
@@ -16,18 +13,14 @@ void PeFile::ReadPeFile()
 	if (!m_peStream.is_open())
 		return;
 
-	// Read dos header
-    m_dosHeader = ReadDosHeader();
-
-    // Read PE/COFF header
-    m_coffHeader = ReadCoffHeader();
-
-    // Read optional header
-    m_optHeader = ReadOptionalHeader();
+    ReadDosHeader();
+    ReadCoffHeader();
+    ReadOptionalHeader();
 
     // Read sections following optional header
     for (int i = 0; i < m_coffHeader.NumberOfSections; i++) {
-        Section* section = new Section(ReadSection());
+        Section* section = new Section();
+        ReadSection(*section);
         m_sections.push_back(*section);
     }
 
@@ -35,88 +28,82 @@ void PeFile::ReadPeFile()
     LocateAndReadDataDirectoryContents(m_sections);
 }
 
-DosHeader PeFile::ReadDosHeader()
+void PeFile::ReadDosHeader()
 {
-    DosHeader dosHeader;
-    BYTE* ptr = dosHeader.Header;
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_magic,    sizeof(dosHeader.e_magic));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_cblp,     sizeof(dosHeader.e_cblp));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_cp,       sizeof(dosHeader.e_cp));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_crlc,     sizeof(dosHeader.e_crlc));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_cparhdr,  sizeof(dosHeader.e_cparhdr));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_minalloc, sizeof(dosHeader.e_minalloc));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_maxalloc, sizeof(dosHeader.e_maxalloc));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_ss,       sizeof(dosHeader.e_ss));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_sp,       sizeof(dosHeader.e_sp));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_csum,     sizeof(dosHeader.e_csum));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_ip,       sizeof(dosHeader.e_ip));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_cs,       sizeof(dosHeader.e_cs));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_lfarlc,   sizeof(dosHeader.e_lfarlc));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_ovno,     sizeof(dosHeader.e_ovno));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_res,      sizeof(dosHeader.e_res));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_oemid,    sizeof(dosHeader.e_oemid));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_oeminfo,  sizeof(dosHeader.e_oeminfo));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_res2,     sizeof(dosHeader.e_res2));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&dosHeader.e_lfanew,   sizeof(dosHeader.e_lfanew));
-    return dosHeader;
+    BYTE* ptr = m_dosHeader.Header;
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_magic,    sizeof(m_dosHeader.e_magic));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_cblp,     sizeof(m_dosHeader.e_cblp));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_cp,       sizeof(m_dosHeader.e_cp));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_crlc,     sizeof(m_dosHeader.e_crlc));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_cparhdr,  sizeof(m_dosHeader.e_cparhdr));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_minalloc, sizeof(m_dosHeader.e_minalloc));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_maxalloc, sizeof(m_dosHeader.e_maxalloc));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_ss,       sizeof(m_dosHeader.e_ss));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_sp,       sizeof(m_dosHeader.e_sp));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_csum,     sizeof(m_dosHeader.e_csum));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_ip,       sizeof(m_dosHeader.e_ip));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_cs,       sizeof(m_dosHeader.e_cs));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_lfarlc,   sizeof(m_dosHeader.e_lfarlc));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_ovno,     sizeof(m_dosHeader.e_ovno));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_res,      sizeof(m_dosHeader.e_res));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_oemid,    sizeof(m_dosHeader.e_oemid));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_oeminfo,  sizeof(m_dosHeader.e_oeminfo));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_res2,     sizeof(m_dosHeader.e_res2));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_dosHeader.e_lfanew,   sizeof(m_dosHeader.e_lfanew));
 }
 
-CoffHeader PeFile::ReadCoffHeader()
+void PeFile::ReadCoffHeader()
 {
     // Move file pointer to PE header
     m_peStream.seekg(m_dosHeader.e_lfanew, ios_base::beg);
 
-    CoffHeader coffHeader;
-    BYTE* ptr = coffHeader.Header;
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.Signature,            sizeof(coffHeader.Signature));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.Machine,              sizeof(coffHeader.Machine));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.NumberOfSections,     sizeof(coffHeader.NumberOfSections));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.TimeDateStamp,        sizeof(coffHeader.TimeDateStamp));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.PointerToSymbolTable, sizeof(coffHeader.PointerToSymbolTable));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.NumberOfSymbols,      sizeof(coffHeader.NumberOfSymbols));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.SizeOfOptionalHeader, sizeof(coffHeader.SizeOfOptionalHeader));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&coffHeader.Characteristics,      sizeof(coffHeader.Characteristics));
-    return coffHeader;
+    BYTE* ptr = m_coffHeader.Header;
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.Signature,            sizeof(m_coffHeader.Signature));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.Machine,              sizeof(m_coffHeader.Machine));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.NumberOfSections,     sizeof(m_coffHeader.NumberOfSections));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.TimeDateStamp,        sizeof(m_coffHeader.TimeDateStamp));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.PointerToSymbolTable, sizeof(m_coffHeader.PointerToSymbolTable));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.NumberOfSymbols,      sizeof(m_coffHeader.NumberOfSymbols));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.SizeOfOptionalHeader, sizeof(m_coffHeader.SizeOfOptionalHeader));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_coffHeader.Characteristics,      sizeof(m_coffHeader.Characteristics));
 }
 
-
-OptionalHeader PeFile::ReadOptionalHeader()
+void PeFile::ReadOptionalHeader()
 {
-    OptionalHeader optionalHeader;
-    BYTE* ptr = optionalHeader.Header;
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.Magic,                       sizeof(optionalHeader.Magic));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MajorLinkerVersion,          sizeof(optionalHeader.MajorLinkerVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MinorLinkerVersion,          sizeof(optionalHeader.MinorLinkerVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfCode,                  sizeof(optionalHeader.SizeOfCode));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfInitializedData,       sizeof(optionalHeader.SizeOfInitializedData));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfUninitializedData,     sizeof(optionalHeader.SizeOfUninitializedData));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.AddressOfEntryPoint,         sizeof(optionalHeader.AddressOfEntryPoint));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.BaseOfCode,                  sizeof(optionalHeader.BaseOfCode));
+    BYTE* ptr = m_optionalHeader.Header;
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.Magic,                       sizeof(m_optionalHeader.Magic));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MajorLinkerVersion,          sizeof(m_optionalHeader.MajorLinkerVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MinorLinkerVersion,          sizeof(m_optionalHeader.MinorLinkerVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfCode,                  sizeof(m_optionalHeader.SizeOfCode));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfInitializedData,       sizeof(m_optionalHeader.SizeOfInitializedData));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfUninitializedData,     sizeof(m_optionalHeader.SizeOfUninitializedData));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.AddressOfEntryPoint,         sizeof(m_optionalHeader.AddressOfEntryPoint));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.BaseOfCode,                  sizeof(m_optionalHeader.BaseOfCode));
 
-    if (optionalHeader.Magic == 0x10b) // PE32
-        CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.BaseOfData, sizeof(optionalHeader.BaseOfData));
+    if (m_optionalHeader.Magic == 0x10b) // PE32
+        CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.BaseOfData, sizeof(m_optionalHeader.BaseOfData));
 
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.ImageBase,                   optionalHeader.Magic == 0x10b ? 4 : 8);
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SectionAlignment,            sizeof(optionalHeader.SectionAlignment));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.FileAlignment,               sizeof(optionalHeader.FileAlignment));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MajorOperatingSystemVersion, sizeof(optionalHeader.MajorOperatingSystemVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MinorOperatingSystemVersion, sizeof(optionalHeader.MinorOperatingSystemVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MajorImageVersion,           sizeof(optionalHeader.MajorImageVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MinorImageVersion,           sizeof(optionalHeader.MinorImageVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MajorSubsystemVersion,       sizeof(optionalHeader.MajorSubsystemVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.MinorSubsystemVersion,       sizeof(optionalHeader.MinorSubsystemVersion));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.Win32VersionValue,           sizeof(optionalHeader.Win32VersionValue));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfImage,                 sizeof(optionalHeader.SizeOfImage));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfHeaders,               sizeof(optionalHeader.SizeOfHeaders));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.CheckSum,                    sizeof(optionalHeader.CheckSum));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.Subsystem,                   sizeof(optionalHeader.Subsystem));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.DllCharacteristics,          sizeof(optionalHeader.DllCharacteristics));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfStackReserve,          optionalHeader.Magic == 0x10b ? 4 : 8);
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfStackCommit,           optionalHeader.Magic == 0x10b ? 4 : 8);
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfHeapReserve,           optionalHeader.Magic == 0x10b ? 4 : 8);
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.SizeOfHeapCommit,            optionalHeader.Magic == 0x10b ? 4 : 8);
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.LoaderFlags,                 sizeof(optionalHeader.LoaderFlags));
-    CopyFromFile(m_peStream, &ptr, (BYTE*)&optionalHeader.NumberOfRvaAndSizes,         sizeof(optionalHeader.NumberOfRvaAndSizes));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.ImageBase,                   m_optionalHeader.Magic == 0x10b ? 4 : 8);
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SectionAlignment,            sizeof(m_optionalHeader.SectionAlignment));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.FileAlignment,               sizeof(m_optionalHeader.FileAlignment));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MajorOperatingSystemVersion, sizeof(m_optionalHeader.MajorOperatingSystemVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MinorOperatingSystemVersion, sizeof(m_optionalHeader.MinorOperatingSystemVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MajorImageVersion,           sizeof(m_optionalHeader.MajorImageVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MinorImageVersion,           sizeof(m_optionalHeader.MinorImageVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MajorSubsystemVersion,       sizeof(m_optionalHeader.MajorSubsystemVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.MinorSubsystemVersion,       sizeof(m_optionalHeader.MinorSubsystemVersion));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.Win32VersionValue,           sizeof(m_optionalHeader.Win32VersionValue));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfImage,                 sizeof(m_optionalHeader.SizeOfImage));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfHeaders,               sizeof(m_optionalHeader.SizeOfHeaders));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.CheckSum,                    sizeof(m_optionalHeader.CheckSum));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.Subsystem,                   sizeof(m_optionalHeader.Subsystem));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.DllCharacteristics,          sizeof(m_optionalHeader.DllCharacteristics));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfStackReserve,          m_optionalHeader.Magic == 0x10b ? 4 : 8);
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfStackCommit,           m_optionalHeader.Magic == 0x10b ? 4 : 8);
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfHeapReserve,           m_optionalHeader.Magic == 0x10b ? 4 : 8);
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.SizeOfHeapCommit,            m_optionalHeader.Magic == 0x10b ? 4 : 8);
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.LoaderFlags,                 sizeof(m_optionalHeader.LoaderFlags));
+    CopyFromFile(m_peStream, &ptr, (BYTE*)&m_optionalHeader.NumberOfRvaAndSizes,         sizeof(m_optionalHeader.NumberOfRvaAndSizes));
 
     // Read data directory entries - They refer to specific tables which are contained in the sections
     // following these entries.
@@ -125,60 +112,20 @@ OptionalHeader PeFile::ReadOptionalHeader()
     // array that follows. It is important to note that this field is used to
     // identify the size of the array, not the number of valid entries in the
     // array.
-    for (DWORD i = 0; i < min(optionalHeader.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
-        CopyFromFile(m_peStream, &ptr, (BYTE*)&(optionalHeader.DataDirectories[i].VirtualAddress), sizeof(optionalHeader.DataDirectories[i].VirtualAddress));
-        CopyFromFile(m_peStream, &ptr, (BYTE*)&(optionalHeader.DataDirectories[i].Size), sizeof(optionalHeader.DataDirectories[i].Size));
-        optionalHeader.DataDirectories[i].DirectoryEntryName = DataDirectoryNames[i];
-        optionalHeader.DataDirectories[i].Type = static_cast<DataDirectoryType>(i);
+    for (DWORD i = 0; i < min(m_optionalHeader.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
+        CopyFromFile(m_peStream, &ptr, (BYTE*)&(m_optionalHeader.DataDirectories[i].VirtualAddress), sizeof(m_optionalHeader.DataDirectories[i].VirtualAddress));
+        CopyFromFile(m_peStream, &ptr, (BYTE*)&(m_optionalHeader.DataDirectories[i].Size), sizeof(m_optionalHeader.DataDirectories[i].Size));
+        m_optionalHeader.DataDirectories[i].DirectoryEntryName = DataDirectoryNames[i];
+        m_optionalHeader.DataDirectories[i].Type = static_cast<DataDirectoryType>(i);
     }
 
-    optionalHeader.HeaderSize = ptr - (BYTE*)optionalHeader.Header;
-    return optionalHeader;
+    m_optionalHeader.HeaderSize = ptr - (BYTE*)m_optionalHeader.Header;
 }
 
-void PeFile::LocateAndReadDataDirectoryContents(const vector<Section>& sections)
+void PeFile::ReadSection(Section& section)
 {
-    // for each data directory entry(DDE) locate its file offset in their respective sections.
-    // DDE will have only rva. so to find the actual file offset we need to find in which section
-    // the DDE falls into. we can do this by using section.VirtualAddress (below if condition).
-    // Once that is done we can simply get the offset with the section using
-    // dataDirectoryFileOffset = DataDirectories[i].VirtualAddress - section.VirtualAddress;
-    // now, since we know the file offset of the section using section.PointerToRawData
-    // we can get the file offset of the data directory using
-    // section.PointerToRawData + dataDirectoryFileOffset
-    for (DWORD i = 0; i < min(m_optHeader.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
-        int sectionCount = 0;
-        for (auto& section : sections) {
-            if (m_optHeader.DataDirectories[i].VirtualAddress >= section.VirtualAddress &&
-                m_optHeader.DataDirectories[i].VirtualAddress <= section.VirtualAddress + section.VirtualSize) {
-                // DDE file offset      = file offset of section   + (offset off DDE within section)
-                m_optHeader.DataDirectories[i].DataDirectoryFileOffset = section.PointerToRawData + (m_optHeader.DataDirectories[i].VirtualAddress - section.VirtualAddress);
-                m_optHeader.DataDirectories[i].SectionIndex = sectionCount;
-
-                // backup the file pointer
-                streampos pos = m_peStream.tellp();
-                m_peStream.seekp(m_optHeader.DataDirectories[i].DataDirectoryFileOffset, ios_base::beg);
-                // copy the data directory's content from the section
-                for (DWORD j = 0; j < m_optHeader.DataDirectories[i].Size; j++) {
-                    char byte = 0;
-                    m_peStream.read(&byte, 1);
-                    m_optHeader.DataDirectories[i].DataDirectoryContent.push_back(byte & 0xff);
-                }
-                m_peStream.seekp(pos, ios_base::beg);
-                break;
-            }
-            sectionCount++;
-        }
-    }
-}
-
-
-Section PeFile::ReadSection()
-{
-    Section sec;
-    ReadSectionHeader(sec);
-    ReadSectionContent(sec);
-    return sec;
+    ReadSectionHeader(section);
+    ReadSectionContent(section);
 }
 
 void PeFile::ReadSectionHeader(Section &section)
@@ -208,6 +155,39 @@ void PeFile::ReadSectionContent(Section &section)
     m_peStream.seekp(pos, ios_base::beg);
 }
 
+void PeFile::LocateAndReadDataDirectoryContents(const vector<Section>& sections)
+{
+    // for each data directory entry(DDE) locate its file offset in their respective sections.
+    // DDE will have only rva. so to find the actual file offset we need to find in which section
+    // the DDE falls into. we can do this by using section.VirtualAddress (below if condition).
+    // Once that is done we can simply get the offset with the section using
+    // dataDirectoryFileOffset = DataDirectories[i].VirtualAddress - section.VirtualAddress;
+    // now, since we know the file offset of the section using section.PointerToRawData
+    // we can get the file offset of the data directory using
+    // section.PointerToRawData + dataDirectoryFileOffset
+    for (DWORD i = 0; i < min(m_optionalHeader.NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
+        for (auto& section : sections) {
+            if (m_optionalHeader.DataDirectories[i].VirtualAddress >= section.VirtualAddress &&
+                m_optionalHeader.DataDirectories[i].VirtualAddress <= section.VirtualAddress + section.VirtualSize) {
+                // DDE file offset      = file offset of section   + (offset off DDE within section)
+                m_optionalHeader.DataDirectories[i].DataDirectoryFileOffset = section.PointerToRawData + (m_optionalHeader.DataDirectories[i].VirtualAddress - section.VirtualAddress);
+
+                // backup the file pointer
+                streampos pos = m_peStream.tellp();
+                m_peStream.seekp(m_optionalHeader.DataDirectories[i].DataDirectoryFileOffset, ios_base::beg);
+                // copy the data directory's content from the section
+                for (DWORD j = 0; j < m_optionalHeader.DataDirectories[i].Size; j++) {
+                    char byte = 0;
+                    m_peStream.read(&byte, 1);
+                    m_optionalHeader.DataDirectories[i].DataDirectoryContent.push_back(byte & 0xff);
+                }
+                m_peStream.seekp(pos, ios_base::beg);
+                break;
+            }
+        }
+    }
+}
+
 //
 // Dump operations
 //
@@ -215,7 +195,7 @@ void PeFile::DumpPeFile()
 {
     m_dosHeader.DumpDosHeader();
     m_coffHeader.DumpCoffHeader();
-    m_optHeader.DumpOptionalHeader();
+    m_optionalHeader.DumpOptionalHeader();
 
     for (auto& secHeader : m_sections) {
         secHeader.DumpSection();
@@ -228,7 +208,7 @@ void PeFile::DumpPeFile()
 //
 Section PeFile::LocateInSection(DWORD rva)
 {
-    Section empty = { 0 };
+    Section empty = {};
     for (auto& section : m_sections)
         if (rva >= section.VirtualAddress &&
             rva <= section.VirtualAddress + section.VirtualSize)

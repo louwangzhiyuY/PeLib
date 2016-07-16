@@ -3,7 +3,8 @@
 
 #define SECTION_HEADER_SIZE 40
 
-struct Section {
+struct Section
+{
     // Computed Fields
 
     BYTE SectionHeaderContent[SECTION_HEADER_SIZE];

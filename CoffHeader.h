@@ -3,7 +3,8 @@
 
 #define COFF_HEADER_SIZE 24
 
-struct CoffHeader {
+struct CoffHeader
+{
     // Computed Fields
 
     BYTE Header[COFF_HEADER_SIZE];

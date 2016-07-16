@@ -3,7 +3,8 @@
 
 #define DOS_HEADER_SIZE 64
 
-struct DosHeader {
+struct DosHeader
+{
     // Computed Fields
 
     BYTE Header[DOS_HEADER_SIZE];
