@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "OptionalHeader.h"
 
-vector<Flag> SubsystemFlags = {
+vector<ValueDescription> SubsystemFlags = {
 	{0, "IMAGE_SUBSYSTEM_UNKNOWN"},
 	{1, "IMAGE_SUBSYSTEM_NATIVE"},
 	{2, "IMAGE_SUBSYSTEM_WINDOWS_GUI"},
@@ -15,7 +15,7 @@ vector<Flag> SubsystemFlags = {
 	{14, "IMAGE_SUBSYSTEM_XBOX"},
 };
 
-vector<Flag> DllCharacteristicsFlags = {
+vector<ValueDescription> DllCharacteristicsFlags = {
 	{0x0020, "IMAGE_DLLCHARACTERISTICS_HIGH_ENTROPY_VA"},
 	{0x0040, "IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE"},
 	{0x0080, "IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY"},
@@ -76,8 +76,8 @@ void OptionalHeader::DumpOptionalHeader()
 	printf("    %-30s: %lx\n",   "SizeOfImage",                  SizeOfImage);
 	printf("    %-30s: %lx\n",   "SizeOfHeaders",                SizeOfHeaders);
 	printf("    %-30s: %lx\n",   "CheckSum",                     CheckSum);
-	printf("    %-30s: %s\n",    "Subsystem",                    FlagToDescription(SubsystemFlags, Subsystem, FALSE).c_str());
-	printf("    %-30s: %s\n",    "DllCharacteristics",           FlagToDescription(DllCharacteristicsFlags, DllCharacteristics, TRUE).c_str());
+	printf("    %-30s: %s\n",    "Subsystem",                    ValueToDescription(SubsystemFlags, Subsystem, FALSE).c_str());
+	printf("    %-30s: %s\n",    "DllCharacteristics",           ValueToDescription(DllCharacteristicsFlags, DllCharacteristics, TRUE).c_str());
 	printf("    %-30s: %llx\n",  "SizeOfStackReserve",           SizeOfStackReserve);
 	printf("    %-30s: %llx\n",  "SizeOfStackCommit",            SizeOfStackCommit);
 	printf("    %-30s: %llx\n",  "SizeOfHeapReserve",            SizeOfHeapReserve);

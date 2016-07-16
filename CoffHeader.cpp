@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CoffHeader.h"
 
-vector<Flag> MachineFlags = {
+vector<ValueDescription> MachineFlags = {
 	{0x0, "IMAGE_FILE_MACHINE_UNKNOWN"},
 	{0x14c, "IMAGE_FILE_MACHINE_I386"},
 	{0x166, "IMAGE_FILE_MACHINE_R4000"},
@@ -28,7 +28,7 @@ vector<Flag> MachineFlags = {
 	{0x9041, "IMAGE_FILE_MACHINE_M32R"},
 };
 
-vector<Flag> CharacteristicsFlags = {
+vector<ValueDescription> CharacteristicsFlags = {
 	{0x0001, "IMAGE_FILE_RELOCS_STRIPPED"},
 	{0x0002, "IMAGE_FILE_EXECUTABLE_IMAGE"},
 	{0x0004, "IMAGE_FILE_LINE_NUMS_STRIPPED"},
@@ -50,11 +50,11 @@ void CoffHeader::DumpCoffHeader()
 {
     cout << "Dumping Coff Header" << endl;
     printf("    %-25s: %c%c\n", "Signature",    ((char *)&Signature)[0], ((char *)&Signature)[1]);
-    printf("    %-25s: %s\n", "Machine",                 FlagToDescription(MachineFlags, Machine, FALSE).c_str());
+    printf("    %-25s: %s\n", "Machine",                 ValueToDescription(MachineFlags, Machine, FALSE).c_str());
     printf("    %-25s: %x\n", "NumberOfSections",        NumberOfSections);
     printf("    %-25s: %lx\n", "TimeDateStamp",           TimeDateStamp);
     printf("    %-25s: %lx\n", "PointerToSymbolTable",    PointerToSymbolTable);
     printf("    %-25s: %lx\n", "NumberOfSymbols",         NumberOfSymbols);
     printf("    %-25s: %x\n", "SizeOfOptionalHeader",    SizeOfOptionalHeader);
-	printf("    %-25s: %s\n", "Characteristics", FlagToDescription(CharacteristicsFlags, Characteristics, TRUE).c_str());
+	printf("    %-25s: %s\n", "Characteristics", ValueToDescription(CharacteristicsFlags, Characteristics, TRUE).c_str());
 }

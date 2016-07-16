@@ -4,8 +4,8 @@
 #define OPTIONAL_HEADER_SIZE 1024
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
-extern vector<Flag> SubsystemFlags;
-extern vector<Flag> DllCharacteristicsFlags;
+extern vector<ValueDescription> SubsystemFlags;
+extern vector<ValueDescription> DllCharacteristicsFlags;
 extern vector<string> DataDirectoryNames;
 
 enum DataDirectoryType

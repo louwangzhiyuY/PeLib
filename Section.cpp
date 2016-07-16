@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Section.h"
 
-vector<Flag> SectionCharacteristicsFlags = {
+vector<ValueDescription> SectionCharacteristicsFlags = {
 	{0x00000008, "IMAGE_SCN_TYPE_NO_PAD"},
 	{0x00000020, "IMAGE_SCN_CNT_CODE"},
 	{0x00000040, "IMAGE_SCN_CNT_INITIALIZED_DATA"},
@@ -56,7 +56,7 @@ void Section::DumpSectionHeader()
     printf("    %-30s: %lx\n", "PointerToLinenumbers", PointerToLinenumbers);
     printf("    %-30s: %x\n",  "NumberOfRelocations",  NumberOfRelocations);
     printf("    %-30s: %x\n",  "NumberOfLinenumbers",  NumberOfLinenumbers);
-    printf("    %-30s: %s\n",  "Characteristics",      FlagToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
+    printf("    %-30s: %s\n",  "Characteristics",      ValueToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
 }
 
 void Section::DumpSectionBody()

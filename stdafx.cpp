@@ -52,29 +52,28 @@ void HexDump(BYTE *buf, DWORD size)
 	}
 }
 
-
-string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseFlag)
+string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag)
 {
 	string description;
-	stringstream ss;
-	ss << hex << flag << " -> ";
+	stringstream hexAddressPrefix;
+	hexAddressPrefix << hex << value << " -> ";
 
-	description += ss.str();
+	description += hexAddressPrefix.str();
 
 	if (bitwiseFlag) {
-		for (auto &f : flags) {
-			if (f.Value & flag) {
-				description += f.Description;
+		for (auto &vd : valueDescriptions) {
+			if (vd.Value & value) {
+				description += vd.Description;
 				description += "|";
 			}
 		}
 		return description;
 	}
 	else {
-		auto iter = find_if(flags.begin(), flags.end(), [&flag](Flag f) {
-			return f.Value == flag;
+		auto iter = find_if(valueDescriptions.begin(), valueDescriptions.end(), [&value](ValueDescription vd) {
+			return vd.Value == value;
 		});
-		if (iter != flags.end())
+		if (iter != valueDescriptions.end())
 			description += iter->Description;
 		return description;
 	}

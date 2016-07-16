@@ -21,7 +21,7 @@
 
 using namespace std;
 
-struct Flag
+struct ValueDescription
 {
 	DWORD Value;
 	char *Description;
@@ -31,4 +31,4 @@ void Dump(vector<char>& bytes);
 void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
 void HexDump(BYTE *buff, DWORD size);
 
-string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseFlag);
+string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag);
