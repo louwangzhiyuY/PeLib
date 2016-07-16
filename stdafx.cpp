@@ -19,13 +19,18 @@ void Dump(vector<char>& bytes)
     }
 }
 
-void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
+UINT CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
 {
     in.read((char *)*buffer, nbytes);
+    if (!in)
+        return PE_FILE_READ_ERROR;
+
     for (int i = 0; i < nbytes; i++)
         field[i] = (*buffer)[i] & 0xff;
 
     *buffer = *buffer + nbytes;
+
+    return PE_SUCCESS;
 }
 
 void HexDump(BYTE *buf, size_t size)
@@ -55,10 +60,10 @@ void HexDump(BYTE *buf, size_t size)
 string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag)
 {
 	string description;
-	stringstream hexAddressPrefix;
-	hexAddressPrefix << hex << value << " -> ";
+	stringstream hexValuePrefix;
+	hexValuePrefix << hex << value << " -> ";
 
-	description += hexAddressPrefix.str();
+	description += hexValuePrefix.str();
 
 	if (bitwiseFlag) {
 		for (auto &vd : valueDescriptions) {

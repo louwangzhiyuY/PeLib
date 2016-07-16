@@ -18,6 +18,7 @@
 
 #include <windows.h>
 #include <intrin.h>
+#include "PeErrors.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ struct ValueDescription
 };
 
 void Dump(vector<char>& bytes);
-void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
+UINT CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
 void HexDump(BYTE *buff, size_t size);
 
 string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag);

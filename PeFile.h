@@ -14,16 +14,16 @@ public:
     PeFile(string pefile);
     Section LocateInSection(DWORD rva);
     void DumpPeFile();
-    void ReadPeFile();
+    UINT ReadPeFile();
 
 private:
-    void ReadDosHeader();
-    void ReadCoffHeader();
-    void ReadOptionalHeader();
-    void ReadSection(Section& section);
-    void LocateAndReadDataDirectoryContents(const vector<Section>& sections);
-    void ReadSectionContent(Section& section);
-    void ReadSectionHeader(Section& section);
+    UINT ReadDosHeader();
+    UINT ReadCoffHeader();
+    UINT ReadOptionalHeader();
+    UINT ReadSection(Section& section);
+    UINT LocateAndReadDataDirectoryContents(const vector<Section>& sections);
+    UINT ReadSectionContent(Section& section);
+    UINT ReadSectionHeader(Section& section);
 
     fstream         m_peStream;
     DosHeader       m_dosHeader;
