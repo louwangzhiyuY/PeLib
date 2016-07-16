@@ -5,7 +5,7 @@ int main()
 {
     UINT ret = PE_SUCCESS;
     //PeFile pe("C:\\Users\\vineelko\\Downloads\\SysinternalsSuite\\accesschk.exe");
-    PeFile pe("c:\\users\\vineel\\documents\\visual studio 2015\\projects\\vctemp\\x64\\debug\\vctemp.pdb");
+    PeFile pe("c:\\users\\vineel\\documents\\visual studio 2015\\projects\\vctemp\\x64\\debug\\vctemp.exe");
     ret = pe.ReadPeFile();
     if (!ret)
         pe.DumpPeFile();

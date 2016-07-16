@@ -7,7 +7,7 @@ struct DosHeader
 {
     // Computed Fields
 
-    BYTE Header[DOS_HEADER_SIZE];
+    DWORD64 FileAddress;
 
     // Fields in PE
 
@@ -30,5 +30,6 @@ struct DosHeader
     WORD   e_oeminfo;                   // OEM information; e_oemid specific
     WORD   e_res2[10];                  // Reserved words
     ULONG  e_lfanew;                    // File address of new exe header
-    void DumpDosHeader();
+
+    void DumpDosHeader(string peFileName);
 };

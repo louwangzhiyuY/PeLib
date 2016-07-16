@@ -5,6 +5,7 @@
 #include "CoffHeader.h"
 #include "OptionalHeader.h"
 #include "Section.h"
+#include "Import.h"
 
 class PeFile
 {
@@ -13,6 +14,8 @@ public:
     DWORD RvaToFa(DWORD rva);
     PeFile(string pefile);
     Section LocateInSection(DWORD rva);
+    UINT ReadImportModuleName(Import* import);
+    UINT ReadImportModuleFunctions(Import* import);
     void DumpPeFile();
     UINT ReadPeFile();
 
@@ -21,13 +24,14 @@ private:
     UINT ReadCoffHeader();
     UINT ReadOptionalHeader();
     UINT ReadSection(Section& section);
-    UINT LocateAndReadDataDirectoryContents(const vector<Section>& sections);
-    UINT ReadSectionContent(Section& section);
-    UINT ReadSectionHeader(Section& section);
+    UINT DataDirectoryEntryRvaToFa(const vector<Section>& sections);
+    UINT ReadImports(DWORD importDirectoryTableFA);
 
     fstream         m_peStream;
+    string          m_peFileName;
     DosHeader       m_dosHeader;
     CoffHeader      m_coffHeader;
     OptionalHeader  m_optionalHeader;
     vector<Section> m_sections;
+    vector<Import>  m_imports;
 };

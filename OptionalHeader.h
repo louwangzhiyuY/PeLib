@@ -2,13 +2,14 @@
 #include "stdafx.h"
 
 #define OPTIONAL_HEADER_SIZE 1024
+#define DATA_DIRECTORY_ENTRY_SIZE 8
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
 extern vector<ValueDescription> SubsystemFlags;
 extern vector<ValueDescription> DllCharacteristicsFlags;
 extern vector<string> DataDirectoryNames;
 
-enum DataDirectoryType
+enum class DataDirectoryType
 {
     Export = 0,
     Import,
@@ -32,12 +33,10 @@ struct DataDirectoryEntry
 {
     // Computed Fields
 
+    DWORD64 FileAddress;
     string DirectoryEntryName;
-    // file offset calculated from section
-    DWORD DataDirectoryFileOffset;
-    // Content of the actual data directory
-    vector<BYTE> DataDirectoryContent;
-
+    // File offset calculated from section
+    DWORD DataDirectoryFileAddress;
     DataDirectoryType Type;
 
     // Fields in PE
@@ -50,8 +49,8 @@ struct OptionalHeader
 {
     // Computed Fields
 
-    BYTE Header[OPTIONAL_HEADER_SIZE];
-    DWORD64 HeaderSize = 0;
+    DWORD64 FileAddress;
+    DWORD64 OptionalHeaderSize;
 
     // Fields in PE
 
@@ -88,5 +87,5 @@ struct OptionalHeader
     DWORD    NumberOfRvaAndSizes;
     DataDirectoryEntry DataDirectories[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 
-    void DumpOptionalHeader();
+    void DumpOptionalHeader(string peFileName);
 };

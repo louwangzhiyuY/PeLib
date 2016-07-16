@@ -28,8 +28,6 @@ struct ValueDescription
 	char *Description;
 };
 
-void Dump(vector<char>& bytes);
-UINT CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
-void HexDump(BYTE *buff, size_t size);
-
+UINT CopyFromFile(fstream& in, char* field, int nbytes);
+UINT HexDump(string peFileName, DWORD64 fileOffset, size_t size);
 string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag);

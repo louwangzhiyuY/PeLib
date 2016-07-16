@@ -48,7 +48,7 @@ vector<string> DataDirectoryNames = {
 	"Reserved"
 };
 
-void OptionalHeader::DumpOptionalHeader()
+void OptionalHeader::DumpOptionalHeader(string peFileName)
 {
 	cout << "Dumping Optional Header" << endl;
 	printf("    %-30s: %x\n",  "Magic",                   Magic);
@@ -92,9 +92,9 @@ void OptionalHeader::DumpOptionalHeader()
 			"Size", DataDirectories[i].Size,
 			"Virutal Address(RVA)", DataDirectories[i].VirtualAddress);
 
-		if (DataDirectories[i].DataDirectoryContent.size() > 0) {
-			printf("		Dumping data directory content...few bytes at file offset %0lx\n", DataDirectories[i].DataDirectoryFileOffset);
-			HexDump(DataDirectories[i].DataDirectoryContent.data(), min(DataDirectories[i].DataDirectoryContent.size(), 32));
+		if (DataDirectories[i].Size > 0) {
+			printf("		Dumping data directory content...few bytes at file offset %0lx\n", DataDirectories[i].DataDirectoryFileAddress);
+			HexDump(peFileName, DataDirectories[i].FileAddress, min(DataDirectories[i].Size, 32));
 		}
 		printf("		----------------------------------------------------------------------------------\n");
 	}

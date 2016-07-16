@@ -46,7 +46,7 @@ vector<ValueDescription> CharacteristicsFlags = {
 	{0x8000, "IMAGE_FILE_BYTES_REVERSED_HI"},
 };
 
-void CoffHeader::DumpCoffHeader()
+void CoffHeader::DumpCoffHeader(string /* peFileName */)
 {
     cout << "Dumping Coff Header" << endl;
     printf("    %-25s: %c%c\n", "Signature",    ((char *)&Signature)[0], ((char *)&Signature)[1]);

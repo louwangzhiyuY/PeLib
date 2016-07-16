@@ -6,40 +6,32 @@
 // TODO: reference any additional headers you need in STDAFX.H
 // and not in this file
 
-void Dump(vector<char>& bytes)
+UINT CopyFromFile(fstream& in, char *field, int nbytes)
 {
-    int count = 0;
-    for (auto &c : bytes) {
-        printf("%02x ", c & 0xff);
-        count++;
-        if (count == 16) {
-            cout << endl;
-            count = 0;
-        }
-    }
-}
-
-UINT CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
-{
-    in.read((char *)*buffer, nbytes);
+    in.read(field, nbytes);
     if (!in)
         return PE_FILE_READ_ERROR;
-
-    for (int i = 0; i < nbytes; i++)
-        field[i] = (*buffer)[i] & 0xff;
-
-    *buffer = *buffer + nbytes;
 
     return PE_SUCCESS;
 }
 
-void HexDump(BYTE *buf, size_t size)
+UINT HexDump(string peFileName, DWORD64 fileOffset, size_t size)
 {
-	vector<BYTE> left;
+    UINT ret = PE_SUCCESS;
+
+    fstream in(peFileName, fstream::binary | fstream::in);
+    if (!in)
+        return PE_FILE_OPEN_ERROR;
+
+    in.seekg(fileOffset, ios_base::beg);
+
+    vector<BYTE> left;
 	vector<BYTE> right;
 
 	for (size_t i = 0; i < size; i++) {
-		BYTE byte = buf[i] & 0xff;
+        char buf = 0;
+        in.read(&buf, 1);   // TODO: Add a check here
+        BYTE byte = buf & 0xff;
 		left.push_back(byte);
 		right.push_back(!iscntrl(byte) ? byte : '.');
 		if (left.size() == 16 || i == size - 1) {
@@ -55,6 +47,8 @@ void HexDump(BYTE *buf, size_t size)
 			right.clear();
 		}
 	}
+
+    return ret;
 }
 
 string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag)

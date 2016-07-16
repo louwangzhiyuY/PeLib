@@ -39,13 +39,13 @@ vector<ValueDescription> SectionCharacteristicsFlags = {
 	{0x80000000, "IMAGE_SCN_MEM_WRITE"},
 };
 
-void Section::DumpSection()
+void Section::DumpSection(string peFileName)
 {
-	DumpSectionHeader();
-	DumpSectionBody();
+	DumpSectionHeader(peFileName);
+	DumpSectionBody(peFileName);
 }
 
-void Section::DumpSectionHeader()
+void Section::DumpSectionHeader(string /* peFileName */)
 {
 	printf("    %-30s: %s\n",  "Name",                 (char *)&Name);
     printf("    %-30s: %lx\n", "VirtualSize",          VirtualSize);
@@ -59,8 +59,10 @@ void Section::DumpSectionHeader()
     printf("    %-30s: %s\n",  "Characteristics",      ValueToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
 }
 
-void Section::DumpSectionBody()
+void Section::DumpSectionBody(string peFileName)
 {
-	cout << "Dumping Section...first few bytes" << endl;
-	HexDump(SectionContent.data(), min (SectionContent.size(), 32));
+    if (SectionContentSize > 0) {
+        cout << "Dumping Section...first few bytes" << endl;
+        HexDump(peFileName, SectionContentFileAddress, min(SectionContentSize, 32));
+    }
 }

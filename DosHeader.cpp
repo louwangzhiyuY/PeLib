@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DosHeader.h"
 
-void DosHeader::DumpDosHeader()
+void DosHeader::DumpDosHeader(string /* peFileName */)
 {
     cout << "Dumping Dos Header" << endl;
     printf("    %-25s: %c%c\n", "e_magic: ",    ((char *)&e_magic)[0], ((char *)&e_magic)[1]);

@@ -7,7 +7,7 @@ struct CoffHeader
 {
     // Computed Fields
 
-    BYTE Header[COFF_HEADER_SIZE];
+    DWORD64 FileAddress;
 
     // Fields in PE
 
@@ -20,5 +20,5 @@ struct CoffHeader
     WORD  SizeOfOptionalHeader;
     WORD  Characteristics;
 
-    void DumpCoffHeader();
+    void DumpCoffHeader(string peFileName);
 };

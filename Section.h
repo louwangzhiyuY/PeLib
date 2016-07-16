@@ -1,17 +1,18 @@
 #pragma once
 #include "stdafx.h"
 
-#define SECTION_HEADER_SIZE 40
+#define SECTION_TABLE_SIZE 40
 
 struct Section
 {
     // Computed Fields
 
-    BYTE SectionHeaderContent[SECTION_HEADER_SIZE];
-    vector<BYTE> SectionContent; // Computed from PointerToRawData
+    DWORD64 SectionTableFileAddress;
+    DWORD64 SectionContentFileAddress; // Alias to PointerToRawData
+    DWORD64 SectionContentSize;        // Alias to SizeOfRawData
 
-    void DumpSectionHeader();
-    void DumpSectionBody();
+    void DumpSectionHeader(string peFileName);
+    void DumpSectionBody(string peFileName);
 
 
     // Fields in PE
@@ -27,5 +28,5 @@ struct Section
     WORD    NumberOfLinenumbers;
     DWORD   Characteristics;
 
-	void DumpSection();
+	void DumpSection(string peFileName);
 };
