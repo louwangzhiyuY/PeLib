@@ -28,22 +28,22 @@ void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
     *buffer = *buffer + nbytes;
 }
 
-void HexDump(BYTE *buf, DWORD size)
+void HexDump(BYTE *buf, size_t size)
 {
 	vector<BYTE> left;
 	vector<BYTE> right;
 
-	for (DWORD i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 		BYTE byte = buf[i] & 0xff;
 		left.push_back(byte);
 		right.push_back(!iscntrl(byte) ? byte : '.');
 		if (left.size() == 16 || i == size - 1) {
-			printf("%016lx| ", i - left.size() + 1);
-			for (auto &byte : left)
-				printf("%02x ", byte);
+			printf("%016I64x| ", i - left.size() + 1);
+			for (auto &b : left)
+				printf("%02x ", b);
 			cout << string(3 * (16 - left.size()), ' ') << "| ";
-			for (auto &byte : right)
-				printf("%c", byte);
+			for (auto &b : right)
+				printf("%c", b);
 			cout << string(16 - left.size(), ' ') << endl;
 
 			left.clear();
