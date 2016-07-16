@@ -3,7 +3,6 @@
 
 void DosHeader::DumpDosHeader()
 {
-    //dump(vector<char>(header, header + DOS_HEADER_SIZE));
     cout << "Dumping Dos Header" << endl;
     printf("    %-25s: %c%c\n", "e_magic: ",    ((char *)&e_magic)[0], ((char *)&e_magic)[1]);
     printf("    %-25s: %x\n",   "e_cblp: ",       e_cblp);

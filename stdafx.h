@@ -23,12 +23,12 @@ using namespace std;
 
 struct Flag
 {
-	DWORD flag;
-	char *value;
+	DWORD Value;
+	char *Description;
 };
 
-void dump(vector<char>& bytes);
-void copy_from_file(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
+void Dump(vector<char>& bytes);
+void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes);
 void HexDump(BYTE *buff, DWORD size);
 
 string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseFlag);

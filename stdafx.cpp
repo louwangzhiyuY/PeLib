@@ -6,7 +6,7 @@
 // TODO: reference any additional headers you need in STDAFX.H
 // and not in this file
 
-void dump(vector<char>& bytes)
+void Dump(vector<char>& bytes)
 {
     int count = 0;
     for (auto &c : bytes) {
@@ -19,7 +19,7 @@ void dump(vector<char>& bytes)
     }
 }
 
-void copy_from_file(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
+void CopyFromFile(fstream& in, BYTE **buffer, BYTE *field, int nbytes)
 {
     in.read((char *)*buffer, nbytes);
     for (int i = 0; i < nbytes; i++)
@@ -63,8 +63,8 @@ string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseF
 
 	if (bitwiseFlag) {
 		for (auto &f : flags) {
-			if (f.flag & flag) {
-				description += f.value;
+			if (f.Value & flag) {
+				description += f.Description;
 				description += "|";
 			}
 		}
@@ -72,10 +72,10 @@ string FlagToDescription(const vector<Flag>& flags, DWORD flag, BOOLEAN bitwiseF
 	}
 	else {
 		auto iter = find_if(flags.begin(), flags.end(), [&flag](Flag f) {
-			return f.flag == flag;
+			return f.Value == flag;
 		});
 		if (iter != flags.end())
-			description += iter->value;
+			description += iter->Description;
 		return description;
 	}
 }

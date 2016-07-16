@@ -6,10 +6,8 @@
 struct Section {
     // Computed Fields
 
-    // This is just all section header fields as a block
-    BYTE sectionHeaderContent[SECTION_HEADER_SIZE];
-    // This is computed from PointerToRawData file offset
-    vector<BYTE> sectionContent;
+    BYTE SectionHeaderContent[SECTION_HEADER_SIZE];
+    vector<BYTE> SectionContent; // Computed from PointerToRawData
 
     void DumpSectionHeader();
     void DumpSectionBody();

@@ -6,7 +6,7 @@
 struct DosHeader {
     // Computed Fields
 
-    BYTE header[DOS_HEADER_SIZE];
+    BYTE Header[DOS_HEADER_SIZE];
 
     // Fields in PE
 

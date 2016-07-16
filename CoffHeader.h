@@ -6,7 +6,7 @@
 struct CoffHeader {
     // Computed Fields
 
-    BYTE header[COFF_HEADER_SIZE];
+    BYTE Header[COFF_HEADER_SIZE];
 
     // Fields in PE
 

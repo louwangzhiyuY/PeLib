@@ -50,8 +50,8 @@ struct DataDirectoryEntry {
 struct OptionalHeader {
     // Computed Fields
 
-    BYTE header[OPTIONAL_HEADER_SIZE];
-    DWORD64 headerSize = 0;
+    BYTE Header[OPTIONAL_HEADER_SIZE];
+    DWORD64 HeaderSize = 0;
 
     // Fields in PE
 

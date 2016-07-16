@@ -47,7 +47,6 @@ void Section::DumpSection()
 
 void Section::DumpSectionHeader()
 {
-	//dump(vector<char>(header, header + SECTION_HEADER_SIZE));
 	printf("    %-30s: %s\n",  "Name",                 (char *)&Name);
     printf("    %-30s: %lx\n", "VirtualSize",          VirtualSize);
     printf("    %-30s: %lx\n", "VirtualAddress",       VirtualAddress);
@@ -63,5 +62,5 @@ void Section::DumpSectionHeader()
 void Section::DumpSectionBody()
 {
 	cout << "Dumping Section...first few bytes" << endl;
-	HexDump(sectionContent.data(), min (sectionContent.size(), 32));
+	HexDump(SectionContent.data(), min (SectionContent.size(), 32));
 }

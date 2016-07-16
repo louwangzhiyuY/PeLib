@@ -50,7 +50,6 @@ vector<string> DataDirectoryNames = {
 
 void OptionalHeader::DumpOptionalHeader()
 {
-	//dump(vector<char>(header, header + headerSize));
 	cout << "Dumping Optional Header" << endl;
 	printf("    %-30s: %x\n",  "Magic",                   Magic);
 	printf("    %-30s: %x\n",  "MajorLinkerVersion",      MajorLinkerVersion);
