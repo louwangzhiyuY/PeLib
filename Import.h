@@ -7,6 +7,8 @@ struct Import
     // Computed Fields
 
     DWORD64 FileAddress;
+    const DWORD BlockSize = 20;
+
     string ModuleName;
     vector<string> ModuleFunctionNames;
     vector<int> ModuleOrdinalNumbers;

@@ -1,13 +1,12 @@
 #pragma once
 #include "stdafx.h"
 
-#define DOS_HEADER_SIZE 64
-
 struct DosHeader
 {
     // Computed Fields
 
     DWORD64 FileAddress;
+    const DWORD BlockSize = 64;
 
     // Fields in PE
 

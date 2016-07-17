@@ -1,8 +1,6 @@
 #pragma once
 #include "stdafx.h"
 
-#define OPTIONAL_HEADER_SIZE 1024
-#define DATA_DIRECTORY_ENTRY_SIZE 8
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
 extern vector<ValueDescription> SubsystemFlags;
@@ -34,6 +32,8 @@ struct DataDirectoryEntry
     // Computed Fields
 
     DWORD64 FileAddress;
+    const DWORD BlockSize = 8;
+
     string DirectoryEntryName;
     // File offset calculated from section
     DWORD DataDirectoryFileAddress;
