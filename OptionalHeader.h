@@ -34,10 +34,9 @@ struct DataDirectoryEntry
     DWORD64 FileAddress;
     const DWORD BlockSize = 8;
 
-    string DirectoryEntryName;
     // File offset calculated from section
     DWORD DataDirectoryFileAddress;
-    DataDirectoryType Type;
+    int Index;
 
     // Fields in PE
 
@@ -50,7 +49,7 @@ struct OptionalHeader
     // Computed Fields
 
     DWORD64 FileAddress;
-    DWORD64 OptionalHeaderSize;
+    DWORD64 BlockSize;  // Seems this should be fixed because data directory are fixed
 
     // Fields in PE
 

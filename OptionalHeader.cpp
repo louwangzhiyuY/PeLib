@@ -88,7 +88,7 @@ void OptionalHeader::DumpOptionalHeader(string peFileName)
 	printf("    Data Directories\n");
 	for (DWORD i = 0; i < min(NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
 		printf("        %2d. %-30s : %-6s: %-10lx %-15s: %lx\n", i,
-			DataDirectories[i].DirectoryEntryName.c_str(),
+            DataDirectoryNames[DataDirectories[i].Index].c_str(),
 			"Size", DataDirectories[i].Size,
 			"Virutal Address(RVA)", DataDirectories[i].VirtualAddress);
 
