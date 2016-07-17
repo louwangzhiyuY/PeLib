@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
+class PeFile;
+
 struct CoffHeader
 {
     // Computed Fields
@@ -19,5 +21,6 @@ struct CoffHeader
     WORD  SizeOfOptionalHeader;
     WORD  Characteristics;
 
-    void DumpCoffHeader(string peFileName);
+    UINT ReadCoffHeader(const PeFile& peFile, DWORD64 fileOffset);
+    void DumpCoffHeader(const PeFile& peFile);
 };

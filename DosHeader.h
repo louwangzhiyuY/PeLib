@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
+class PeFile;
+
 struct DosHeader
 {
     // Computed Fields
@@ -30,5 +32,6 @@ struct DosHeader
     WORD   e_res2[10];                  // Reserved words
     ULONG  e_lfanew;                    // File address of new exe header
 
-    void DumpDosHeader(string peFileName);
+    UINT ReadDosHeader(const PeFile& peFile, DWORD64 fileOffset);
+    void DumpDosHeader(const PeFile& peFile);
 };

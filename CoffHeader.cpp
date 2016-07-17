@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "CoffHeader.h"
+#include "PeCommon.h"
+#include "PeErrors.h"
+#include "PeFile.h"
 
 vector<ValueDescription> MachineFlags = {
 	{0x0, "IMAGE_FILE_MACHINE_UNKNOWN"},
@@ -46,7 +49,37 @@ vector<ValueDescription> CharacteristicsFlags = {
 	{0x8000, "IMAGE_FILE_BYTES_REVERSED_HI"},
 };
 
-void CoffHeader::DumpCoffHeader(string /* peFileName */)
+UINT CoffHeader::ReadCoffHeader(const PeFile& peFile, DWORD64 fileOffset)
+{
+    UINT ret = PE_SUCCESS;
+
+    fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
+    if (!in)
+        return PE_FILE_OPEN_ERROR;
+
+    // Store the file address of COFF Header
+    FileAddress = fileOffset;
+
+    // Move file pointer to PE header
+    in.seekg(FileAddress, ios_base::beg);
+
+    COPY_AND_CHECK_RETURN_STATUS(in, Signature);
+    if (((char *)&Signature)[0] != 'P' &&
+        ((char *)&Signature)[1] != 'E')
+        return PE_NOT_VALID_PE;
+
+    COPY_AND_CHECK_RETURN_STATUS(in, Machine);
+    COPY_AND_CHECK_RETURN_STATUS(in, NumberOfSections);
+    COPY_AND_CHECK_RETURN_STATUS(in, TimeDateStamp);
+    COPY_AND_CHECK_RETURN_STATUS(in, PointerToSymbolTable);
+    COPY_AND_CHECK_RETURN_STATUS(in, NumberOfSymbols);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfOptionalHeader);
+    COPY_AND_CHECK_RETURN_STATUS(in, Characteristics);
+
+    return ret;
+}
+
+void CoffHeader::DumpCoffHeader(const PeFile& /* peFile */)
 {
     cout << "Dumping Coff Header" << endl;
     printf("    %-25s: %c%c\n", "Signature",    ((char *)&Signature)[0], ((char *)&Signature)[1]);

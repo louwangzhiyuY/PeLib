@@ -18,16 +18,5 @@
 
 #include <windows.h>
 #include <intrin.h>
-#include "PeErrors.h"
 
 using namespace std;
-
-struct ValueDescription
-{
-	DWORD Value;
-	char *Description;
-};
-
-UINT CopyFromFile(fstream& in, char* field, int nbytes);
-UINT HexDump(string peFileName, DWORD64 fileOffset, size_t size);
-string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWORD value, BOOLEAN bitwiseFlag);

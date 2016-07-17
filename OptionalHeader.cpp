@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "OptionalHeader.h"
+#include "PeCommon.h"
+#include "PeErrors.h"
+#include "PeFile.h"
 
 vector<ValueDescription> SubsystemFlags = {
 	{0, "IMAGE_SUBSYSTEM_UNKNOWN"},
@@ -48,7 +51,75 @@ vector<string> DataDirectoryNames = {
 	"Reserved"
 };
 
-void OptionalHeader::DumpOptionalHeader(string peFileName)
+UINT OptionalHeader::ReadOptionalHeader(const PeFile& peFile, DWORD64 fileOffset)
+{
+    UINT ret = PE_SUCCESS;
+
+    fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
+    if (!in)
+        return PE_FILE_OPEN_ERROR;
+
+    // Store the file address of Optional Header
+    FileAddress = fileOffset;
+
+    // Move file pointer to Optional header
+    in.seekg(FileAddress, ios_base::beg);
+
+    COPY_AND_CHECK_RETURN_STATUS(in, Magic);
+    COPY_AND_CHECK_RETURN_STATUS(in, MajorLinkerVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MinorLinkerVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfCode);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfInitializedData);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfUninitializedData);
+    COPY_AND_CHECK_RETURN_STATUS(in, AddressOfEntryPoint);
+    COPY_AND_CHECK_RETURN_STATUS(in, BaseOfCode);
+
+    if (Magic == 0x10b) // PE32
+        COPY_AND_CHECK_RETURN_STATUS(in, BaseOfData);
+
+    COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(in, ImageBase, Magic == 0x10b ? 4 : 8);
+    COPY_AND_CHECK_RETURN_STATUS(in, SectionAlignment);
+    COPY_AND_CHECK_RETURN_STATUS(in, FileAlignment);
+    COPY_AND_CHECK_RETURN_STATUS(in, MajorOperatingSystemVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MinorOperatingSystemVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MajorImageVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MinorImageVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MajorSubsystemVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, MinorSubsystemVersion);
+    COPY_AND_CHECK_RETURN_STATUS(in, Win32VersionValue);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfImage);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfHeaders);
+    COPY_AND_CHECK_RETURN_STATUS(in, CheckSum);
+    COPY_AND_CHECK_RETURN_STATUS(in, Subsystem);
+    COPY_AND_CHECK_RETURN_STATUS(in, DllCharacteristics);
+    COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(in, SizeOfStackReserve, Magic == 0x10b ? 4 : 8);
+    COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(in, SizeOfStackCommit,  Magic == 0x10b ? 4 : 8);
+    COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(in, SizeOfHeapReserve,  Magic == 0x10b ? 4 : 8);
+    COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(in, SizeOfHeapCommit,   Magic == 0x10b ? 4 : 8);
+    COPY_AND_CHECK_RETURN_STATUS(in, LoaderFlags);
+    COPY_AND_CHECK_RETURN_STATUS(in, NumberOfRvaAndSizes);
+
+    // Read data directory entries - They refer to specific tables which are contained in the sections
+    // following these entries.
+    //
+    // NumberOfRvaAndSizes. This field identifies the length of the DataDirectory
+    // array that follows. It is important to note that this field is used to
+    // identify the size of the array, not the number of valid entries in the
+    // array.
+    for (DWORD i = 0; i < min(NumberOfRvaAndSizes, IMAGE_NUMBEROF_DIRECTORY_ENTRIES); i++) {
+        streampos dataDirectoryFA = in.tellg();
+        DataDirectories[i].FileAddress = dataDirectoryFA;
+        COPY_AND_CHECK_RETURN_STATUS(in, DataDirectories[i].VirtualAddress);
+        COPY_AND_CHECK_RETURN_STATUS(in, DataDirectories[i].Size);
+        DataDirectories[i].Index = i;
+    }
+
+    streampos end = in.tellg();
+    BlockSize = static_cast<DWORD64>(end) - FileAddress;
+    return ret;
+}
+
+void OptionalHeader::DumpOptionalHeader(const PeFile& peFile)
 {
 	cout << "Dumping Optional Header" << endl;
 	printf("    %-30s: %x\n",  "Magic",                   Magic);
@@ -93,8 +164,8 @@ void OptionalHeader::DumpOptionalHeader(string peFileName)
 			"Virutal Address(RVA)", DataDirectories[i].VirtualAddress);
 
 		if (DataDirectories[i].Size > 0) {
-			printf("		Dumping data directory content...few bytes at file offset %0lx\n", DataDirectories[i].DataDirectoryFileAddress);
-			HexDump(peFileName, DataDirectories[i].FileAddress, min(DataDirectories[i].Size, 32));
+			printf("		Dumping data directory content...few bytes at file offset %0lx\n", peFile.RvaToFa(DataDirectories[i].VirtualAddress));
+			HexDump(peFile.GetPeFilePath(), DataDirectories[i].FileAddress, min(DataDirectories[i].Size, 32));
 		}
 		printf("		----------------------------------------------------------------------------------\n");
 	}

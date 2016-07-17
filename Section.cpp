@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "Section.h"
+#include "PeCommon.h"
+#include "PeErrors.h"
+#include "PeFile.h"
 
 vector<ValueDescription> SectionCharacteristicsFlags = {
 	{0x00000008, "IMAGE_SCN_TYPE_NO_PAD"},
@@ -39,13 +42,46 @@ vector<ValueDescription> SectionCharacteristicsFlags = {
 	{0x80000000, "IMAGE_SCN_MEM_WRITE"},
 };
 
-void Section::DumpSection(string peFileName)
+UINT Section::ReadSectionTable(const PeFile& peFile, DWORD64 fileOffset)
 {
-	DumpSectionHeader(peFileName);
-	DumpSectionBody(peFileName);
+    UINT ret = PE_SUCCESS;
+
+    fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
+    if (!in)
+        return PE_FILE_OPEN_ERROR;
+
+    // Store the file address of Optional Header
+    SectionTableFileAddress = fileOffset;
+
+    // Move file pointer to Section header
+    in.seekg(SectionTableFileAddress, ios_base::beg);
+
+    COPY_AND_CHECK_RETURN_STATUS(in, Name);
+    COPY_AND_CHECK_RETURN_STATUS(in, VirtualSize);
+    COPY_AND_CHECK_RETURN_STATUS(in, VirtualAddress);
+    COPY_AND_CHECK_RETURN_STATUS(in, SizeOfRawData);
+    COPY_AND_CHECK_RETURN_STATUS(in, PointerToRawData);
+    COPY_AND_CHECK_RETURN_STATUS(in, PointerToRelocations);
+    COPY_AND_CHECK_RETURN_STATUS(in, PointerToLinenumbers);
+    COPY_AND_CHECK_RETURN_STATUS(in, NumberOfRelocations);
+    COPY_AND_CHECK_RETURN_STATUS(in, NumberOfLinenumbers);
+    COPY_AND_CHECK_RETURN_STATUS(in, Characteristics);
+
+    // Trivial but useful to store PointerToRawData as a File Address
+    SectionContentFileAddress = PointerToRawData;
+    // Trivial but useful to store SizeOfRawData as a SectionContentSize
+    SectionContentSize = SizeOfRawData;
+
+    return ret;
 }
 
-void Section::DumpSectionHeader(string /* peFileName */)
+void Section::DumpSection(const PeFile& peFile)
+{
+	DumpSectionHeader(peFile);
+	DumpSectionBody(peFile);
+}
+
+void Section::DumpSectionHeader(const PeFile& /* peFile */)
 {
 	printf("    %-30s: %s\n",  "Name",                 (char *)&Name);
     printf("    %-30s: %lx\n", "VirtualSize",          VirtualSize);
@@ -59,10 +95,10 @@ void Section::DumpSectionHeader(string /* peFileName */)
     printf("    %-30s: %s\n",  "Characteristics",      ValueToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
 }
 
-void Section::DumpSectionBody(string peFileName)
+void Section::DumpSectionBody(const PeFile& peFile)
 {
     if (SectionContentSize > 0) {
         cout << "Dumping Section...first few bytes" << endl;
-        HexDump(peFileName, SectionContentFileAddress, min(SectionContentSize, 32));
+        HexDump(peFile.GetPeFilePath(), SectionContentFileAddress, min(SectionContentSize, 32));
     }
 }

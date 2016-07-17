@@ -1,11 +1,8 @@
 #pragma once
 #include "stdafx.h"
+#include "PeCommon.h"
 
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
-
-extern vector<ValueDescription> SubsystemFlags;
-extern vector<ValueDescription> DllCharacteristicsFlags;
-extern vector<string> DataDirectoryNames;
 
 enum class DataDirectoryType
 {
@@ -33,9 +30,6 @@ struct DataDirectoryEntry
 
     DWORD64 FileAddress;
     const DWORD BlockSize = 8;
-
-    // File offset calculated from section
-    DWORD DataDirectoryFileAddress;
     int Index;
 
     // Fields in PE
@@ -43,6 +37,8 @@ struct DataDirectoryEntry
     DWORD VirtualAddress;
     DWORD Size;
 };
+
+class PeFile;
 
 struct OptionalHeader
 {
@@ -86,5 +82,6 @@ struct OptionalHeader
     DWORD    NumberOfRvaAndSizes;
     DataDirectoryEntry DataDirectories[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 
-    void DumpOptionalHeader(string peFileName);
+    UINT ReadOptionalHeader(const PeFile& peFile, DWORD64 fileOffset);
+    void DumpOptionalHeader(const PeFile& peFile);
 };

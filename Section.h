@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
+class PeFile;
+
 struct Section
 {
     // Computed Fields
@@ -11,9 +13,8 @@ struct Section
     DWORD64 SectionContentFileAddress; // Alias to PointerToRawData
     DWORD64 SectionContentSize;        // Alias to SizeOfRawData
 
-    void DumpSectionHeader(string peFileName);
-    void DumpSectionBody(string peFileName);
-
+    void DumpSectionHeader(const PeFile& peFile);
+    void DumpSectionBody(const PeFile& peFile);
 
     // Fields in PE
 
@@ -28,5 +29,6 @@ struct Section
     WORD    NumberOfLinenumbers;
     DWORD   Characteristics;
 
-	void DumpSection(string peFileName);
+    UINT ReadSectionTable(const PeFile& peFile, DWORD64 fileOffset);
+    void DumpSection(const PeFile& peFile);
 };

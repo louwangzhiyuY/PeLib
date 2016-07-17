@@ -91,6 +91,7 @@
     <ClInclude Include="DosHeader.h" />
     <ClInclude Include="Import.h" />
     <ClInclude Include="OptionalHeader.h" />
+    <ClInclude Include="PeCommon.h" />
     <ClInclude Include="PeErrors.h" />
     <ClInclude Include="PeFile.h" />
     <ClInclude Include="Section.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="DosHeader.cpp" />
     <ClCompile Include="Import.cpp" />
     <ClCompile Include="OptionalHeader.cpp" />
+    <ClCompile Include="PeCommon.cpp" />
     <ClCompile Include="PeFile.cpp" />
     <ClCompile Include="PeLib.cpp" />
     <ClCompile Include="Section.cpp" />

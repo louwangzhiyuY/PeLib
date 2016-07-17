@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "PECommon.h"
 #include "DosHeader.h"
 #include "CoffHeader.h"
 #include "OptionalHeader.h"
@@ -10,22 +11,16 @@
 class PeFile
 {
 public:
-    //TODO: Implement move semantics in Section
-    DWORD RvaToFa(DWORD rva);
-    PeFile(string pefile);
-    Section LocateInSection(DWORD rva);
-    UINT ReadImportModuleName(Import& import);
-    UINT ReadImportModuleFunctions(Import& import);
+    explicit PeFile(string peFileName);
+    DWORD RvaToFa(DWORD rva) const;
     void DumpPeFile();
     UINT ReadPeFile();
-
+    const string& GetPeFilePath() const;
+    bool IsPe32() const;
 private:
-    UINT ReadDosHeader();
-    UINT ReadCoffHeader();
-    UINT ReadOptionalHeader();
     UINT ReadSections();
-    UINT DataDirectoryEntryRvaToFa(const vector<Section>& sections);
-    UINT ReadImports(DWORD importDirectoryTableFA);
+    UINT ReadImports();
+    Section LocateInSection(DWORD rva) const;
 
     string          m_peFileName;
     DosHeader       m_dosHeader;

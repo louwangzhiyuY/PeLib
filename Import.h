@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 
+class PeFile;
 
 struct Import
 {
@@ -21,5 +22,10 @@ struct Import
     ULONG ImportLookupTableRVA;
     ULONG ImportAddressTableRVA;  // TODO: not sure what it is
 
-    void DumpImport(string peFileName);
+    UINT ReadImport(const PeFile& peFile, DWORD64 fileOffset);
+    void DumpImport(const PeFile& peFile);
+
+private:
+    UINT ReadImportModuleName(const PeFile& peFile, DWORD64 fileOffset);
+    UINT ReadImportModuleFunctions(const PeFile& peFile, DWORD64 fileOffset);
 };
