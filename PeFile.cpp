@@ -95,28 +95,28 @@ UINT PeFile::ReadImports()
 void PeFile::DumpPeFile()
 {
     m_dosHeader.DumpDosHeader(*this);
-	printf(BLOCK_BREAK"\n");
+    printf(BLOCK_BREAK"\n");
 
     m_coffHeader.DumpCoffHeader(*this);
-	printf(BLOCK_BREAK"\n");
-	
-	m_optionalHeader.DumpOptionalHeader(*this);
-	printf(BLOCK_BREAK"\n");
+    printf(BLOCK_BREAK"\n");
+    
+    m_optionalHeader.DumpOptionalHeader(*this);
+    printf(BLOCK_BREAK"\n");
 
-	printf("Dumping Sections...\n");
+    printf("Dumping Sections...\n");
     for (auto& section : m_sections) {
         section.DumpSection(*this);
-		printf(SECTION_BREAK"\n");
+        printf(SECTION_BREAK"\n");
     }
 
-	printf(BLOCK_BREAK"\n");
+    printf(BLOCK_BREAK"\n");
 
     for (auto& import : m_imports) {
         import.DumpImport(*this);
-		printf(SECTION_BREAK"\n");
+        printf(SECTION_BREAK"\n");
     }
-	printf(BLOCK_BREAK"\n");
-	m_exports.DumpExport(*this);
+    printf(BLOCK_BREAK"\n");
+    m_exports.DumpExport(*this);
 }
 
 //

@@ -8,10 +8,10 @@ UINT Import::ReadImport(const PeFile& peFile, DWORD64 fileOffset)
 {
     UINT ret = PE_SUCCESS;
 
-	DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
-	// If the data directory does not exist then we ignore processing further
-	if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
-		return ret;
+    DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
+    // If the data directory does not exist then we ignore processing further
+    if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
+        return ret;
 
     fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
     if (!in)
@@ -126,12 +126,12 @@ UINT Import::ReadImportModuleFunctions(const PeFile& peFile, DWORD64 fileOffset)
 
 void Import::DumpImport(const PeFile& peFile)
 {
-	DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
-	// If the data directory does not exist then we ignore processing further
-	if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
-		return;
+    DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
+    // If the data directory does not exist then we ignore processing further
+    if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
+        return;
 
-	cout << "Import Module Name: " << ModuleName << endl;
+    cout << "Import Module Name: " << ModuleName << endl;
     printf("    %-25s: %#.lx\n", "NameRVA",               ImportModuleNameRVA);
     printf("    %-25s: %lx\n",   "TimeStamp",             TimeStamp);
     printf("    %-25s: %lx\n",   "ForwarderChain",        ForwarderChain);

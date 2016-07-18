@@ -37,10 +37,10 @@ UINT Export::ReadExport(const PeFile& peFile, DWORD64 fileOffset)
 {
     UINT ret = PE_SUCCESS;
 
-	DataDirectoryEntry exportDirectory = peFile.GetDataDirectories(DataDirectoryType::Export);
-	// If the data directory does not exist then we ignore processing further
-	if (exportDirectory.VirtualAddress == 0 && exportDirectory.Size == 0)
-		return ret;
+    DataDirectoryEntry exportDirectory = peFile.GetDataDirectories(DataDirectoryType::Export);
+    // If the data directory does not exist then we ignore processing further
+    if (exportDirectory.VirtualAddress == 0 && exportDirectory.Size == 0)
+        return ret;
 
     fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
     if (!in)
@@ -74,8 +74,8 @@ UINT Export::ReadExport(const PeFile& peFile, DWORD64 fileOffset)
     ret = ReadExportOrdinalTable(peFile, peFile.RvaToFa(OrdinalTableRVA));
     RETURN_ON_FAILURE(ret);
 
-	ret = PopulateExportSummaryTable(peFile);
-	RETURN_ON_FAILURE(ret);
+    ret = PopulateExportSummaryTable(peFile);
+    RETURN_ON_FAILURE(ret);
 
     return PE_SUCCESS;
 }
@@ -201,12 +201,12 @@ UINT Export::PopulateExportSummaryTable(const PeFile& peFile)
 
 void Export::DumpExport(const PeFile& peFile)
 {
-	DataDirectoryEntry exportDirectory = peFile.GetDataDirectories(DataDirectoryType::Export);
-	// If the data directory does not exist then we ignore processing further
-	if (exportDirectory.VirtualAddress == 0 && exportDirectory.Size == 0)
-		return;
+    DataDirectoryEntry exportDirectory = peFile.GetDataDirectories(DataDirectoryType::Export);
+    // If the data directory does not exist then we ignore processing further
+    if (exportDirectory.VirtualAddress == 0 && exportDirectory.Size == 0)
+        return;
 
-	cout << "Dumping Export Directory Table " << endl;
+    cout << "Dumping Export Directory Table " << endl;
     printf("    %-25s: %lx\n",   "ExportFlags",                 ExportFlags);
     printf("    %-25s: %lx\n",   "TimeStamp",                   TimeStamp);
     printf("    %-25s: %x\n",    "MajorVersion",                MajorVersion);
@@ -226,13 +226,10 @@ void Export::DumpExport(const PeFile& peFile)
             "Function Name",
             "Forwarder Name",
             "Ordinal");
-	printf("---------------------------------------------"
-		   "---------------------------------------------"
-		   "---------------------------------------------"
-		   "-------------------------------------\n");
+    printf(BLOCK_BREAK"\n");
 
     for (auto& exportSummary : ExportSummaryTable) {
-		printf("    |%#25.lx |%-20lx |%-55s |%-45s |%-10lx\n",
+        printf("    |%#25.lx |%-20lx |%-55s |%-45s |%-10lx\n",
                 exportSummary.ExportRVAOrForwarderRVA,
                 exportSummary.IsForwardeRVA,
                 exportSummary.FunctionName.c_str(),
