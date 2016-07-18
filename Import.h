@@ -8,7 +8,7 @@ struct Import
     // Computed Fields
 
     DWORD64 FileAddress;
-    const DWORD BlockSize = 20;
+    const DWORD BlockSize = 20; // This only constitue the Import Directory Table
 
     string ModuleName;
     vector<string> ModuleFunctionNames;
@@ -16,11 +16,11 @@ struct Import
 
     // Fields in PE
 
-    ULONG ImportModuleNameRVA;
-    ULONG TimeStamp;
-    ULONG ForwarderChain;         // TODO: not sure what it is
-    ULONG ImportLookupTableRVA;
-    ULONG ImportAddressTableRVA;  // TODO: not sure what it is
+    DWORD ImportModuleNameRVA;
+    DWORD TimeStamp;
+    DWORD ForwarderChain;         // TODO: not sure what it is
+    DWORD ImportLookupTableRVA;
+    DWORD ImportAddressTableRVA;  // TODO: not sure what it is
 
     UINT ReadImport(const PeFile& peFile, DWORD64 fileOffset);
     void DumpImport(const PeFile& peFile);

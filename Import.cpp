@@ -8,6 +8,11 @@ UINT Import::ReadImport(const PeFile& peFile, DWORD64 fileOffset)
 {
     UINT ret = PE_SUCCESS;
 
+	DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
+	// If the data directory does not exist then we ignore processing further
+	if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
+		return ret;
+
     fstream in(peFile.GetPeFilePath(), fstream::binary | fstream::in);
     if (!in)
         return PE_FILE_OPEN_ERROR;
@@ -17,9 +22,6 @@ UINT Import::ReadImport(const PeFile& peFile, DWORD64 fileOffset)
 
     // Move file pointer to Import Directory Table entry
     in.seekg(FileAddress, ios_base::beg);
-
-    // For convinence we are storing the import FA
-    FileAddress = fileOffset;
 
     // Read the fields.
     COPY_AND_CHECK_RETURN_STATUS(in, ImportLookupTableRVA);
@@ -122,14 +124,19 @@ UINT Import::ReadImportModuleFunctions(const PeFile& peFile, DWORD64 fileOffset)
     return ret;
 }
 
-void Import::DumpImport(const PeFile& /* peFile */)
+void Import::DumpImport(const PeFile& peFile)
 {
-    cout << "Import Module Name: " << ModuleName << endl;
-    printf("    %-25s: %lx\n", "NameRVA",               ImportModuleNameRVA);
-    printf("    %-25s: %lx\n", "TimeStamp",             TimeStamp);
-    printf("    %-25s: %lx\n", "ForwarderChain",        ForwarderChain);
-    printf("    %-25s: %lx\n", "ImportLookupTableRVA",  ImportLookupTableRVA);
-    printf("    %-25s: %lx\n", "ImportAddressTableRVA", ImportAddressTableRVA);
+	DataDirectoryEntry importDirectory = peFile.GetDataDirectories(DataDirectoryType::Import);
+	// If the data directory does not exist then we ignore processing further
+	if (importDirectory.VirtualAddress == 0 && importDirectory.Size == 0)
+		return;
+
+	cout << "Import Module Name: " << ModuleName << endl;
+    printf("    %-25s: %#.lx\n", "NameRVA",               ImportModuleNameRVA);
+    printf("    %-25s: %lx\n",   "TimeStamp",             TimeStamp);
+    printf("    %-25s: %lx\n",   "ForwarderChain",        ForwarderChain);
+    printf("    %-25s: %#.lx\n", "ImportLookupTableRVA",  ImportLookupTableRVA);
+    printf("    %-25s: %#.lx\n", "ImportAddressTableRVA", ImportAddressTableRVA);
 
     if (ModuleFunctionNames.size() > 0) {
         printf("    %-25s:\n", "Module Function Names");

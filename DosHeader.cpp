@@ -72,5 +72,5 @@ void DosHeader::DumpDosHeader(const PeFile& /* peFile */)
     for (int i = 0; i < sizeof(e_res2)/sizeof(WORD); i++)
         printf("%-2x ", e_res2[i]);
     cout << endl;
-    printf("    %-25s: %x\n", "e_lfanew: ",       e_lfanew);
+    printf("    %-25s: %#.x\n", "e_lfanew: ",       e_lfanew);
 }

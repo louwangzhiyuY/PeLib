@@ -14,25 +14,24 @@ UINT PeFile::ReadPeFile()
 {
     UINT ret = PE_SUCCESS;
 
-    ret = m_dosHeader.ReadDosHeader(
-                        *this,
-                        0);
+    ret = m_dosHeader.ReadDosHeader(*this, 0);
     RETURN_ON_FAILURE(ret);
 
-    ret = m_coffHeader.ReadCoffHeader(
-                        *this,
-                        m_dosHeader.e_lfanew);
+    ret = m_coffHeader.ReadCoffHeader(*this, m_dosHeader.e_lfanew);
     RETURN_ON_FAILURE(ret);
 
-    ret = m_optionalHeader.ReadOptionalHeader(
-                            *this,
-                            m_coffHeader.FileAddress + m_coffHeader.BlockSize);
+    ret = m_optionalHeader.ReadOptionalHeader(*this, m_coffHeader.FileAddress + m_coffHeader.BlockSize);
     RETURN_ON_FAILURE(ret);
 
     ret = ReadSections();
     RETURN_ON_FAILURE(ret);
 
     ret = ReadImports();
+    RETURN_ON_FAILURE(ret);
+
+    int exportTableIndex = static_cast<int>(DataDirectoryType::Export);
+    DWORD64 fileOffset = RvaToFa(m_optionalHeader.DataDirectories[exportTableIndex].VirtualAddress);
+    ret = m_exports.ReadExport(*this, fileOffset);
     RETURN_ON_FAILURE(ret);
 
     return ret;
@@ -96,18 +95,28 @@ UINT PeFile::ReadImports()
 void PeFile::DumpPeFile()
 {
     m_dosHeader.DumpDosHeader(*this);
-    m_coffHeader.DumpCoffHeader(*this);
-    m_optionalHeader.DumpOptionalHeader(*this);
+	printf(BLOCK_BREAK"\n");
 
+    m_coffHeader.DumpCoffHeader(*this);
+	printf(BLOCK_BREAK"\n");
+	
+	m_optionalHeader.DumpOptionalHeader(*this);
+	printf(BLOCK_BREAK"\n");
+
+	printf("Dumping Sections...\n");
     for (auto& section : m_sections) {
         section.DumpSection(*this);
-        cout << endl << "===================" << endl;
+		printf(SECTION_BREAK"\n");
     }
+
+	printf(BLOCK_BREAK"\n");
 
     for (auto& import : m_imports) {
         import.DumpImport(*this);
-        cout << endl << "===================" << endl;
+		printf(SECTION_BREAK"\n");
     }
+	printf(BLOCK_BREAK"\n");
+	m_exports.DumpExport(*this);
 }
 
 //
@@ -133,4 +142,9 @@ DWORD PeFile::RvaToFa(DWORD rva) const
 bool PeFile::IsPe32() const
 {
     return m_optionalHeader.Magic == 0x10b;
+}
+
+DataDirectoryEntry PeFile::GetDataDirectories(DataDirectoryType type) const
+{
+    return m_optionalHeader.DataDirectories[static_cast<DWORD>(type)];
 }

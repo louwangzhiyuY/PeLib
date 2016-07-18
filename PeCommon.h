@@ -1,6 +1,12 @@
 #pragma once
 #include "stdafx.h"
 
+#define SECTION_BREAK "=============================================="
+#define BLOCK_BREAK "---------------------------------------------"\
+"---------------------------------------------"\
+"---------------------------------------------"\
+"---------------------------------------------"
+
 struct ValueDescription
 {
     DWORD Value;
@@ -25,3 +31,4 @@ string ValueToDescription(const vector<ValueDescription>& valueDescriptions, DWO
 
 #define COPY_AND_CHECK_RETURN_STATUS(stream, field) \
             COPY_WITH_SIZE_AND_CHECK_RETURN_STATUS(stream, field, sizeof(field))
+

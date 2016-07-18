@@ -82,12 +82,12 @@ UINT CoffHeader::ReadCoffHeader(const PeFile& peFile, DWORD64 fileOffset)
 void CoffHeader::DumpCoffHeader(const PeFile& /* peFile */)
 {
     cout << "Dumping Coff Header" << endl;
-    printf("    %-25s: %c%c\n", "Signature",    ((char *)&Signature)[0], ((char *)&Signature)[1]);
-    printf("    %-25s: %s\n", "Machine",                 ValueToDescription(MachineFlags, Machine, FALSE).c_str());
-    printf("    %-25s: %x\n", "NumberOfSections",        NumberOfSections);
-    printf("    %-25s: %lx\n", "TimeDateStamp",           TimeDateStamp);
-    printf("    %-25s: %lx\n", "PointerToSymbolTable",    PointerToSymbolTable);
-    printf("    %-25s: %lx\n", "NumberOfSymbols",         NumberOfSymbols);
-    printf("    %-25s: %x\n", "SizeOfOptionalHeader",    SizeOfOptionalHeader);
-	printf("    %-25s: %s\n", "Characteristics", ValueToDescription(CharacteristicsFlags, Characteristics, TRUE).c_str());
+    printf("    %-25s: %c%c\n", "Signature",            ((char *)&Signature)[0], ((char *)&Signature)[1]);
+    printf("    %-25s: %s\n",   "Machine",              ValueToDescription(MachineFlags, Machine, FALSE).c_str());
+    printf("    %-25s: %x\n",   "NumberOfSections",     NumberOfSections);
+    printf("    %-25s: %lx\n",  "TimeDateStamp",        TimeDateStamp);
+    printf("    %-25s: %lx\n",  "PointerToSymbolTable", PointerToSymbolTable);
+    printf("    %-25s: %lx\n",  "NumberOfSymbols",      NumberOfSymbols);
+    printf("    %-25s: %x\n",   "SizeOfOptionalHeader", SizeOfOptionalHeader);
+	printf("    %-25s: %s\n",   "Characteristics",      ValueToDescription(CharacteristicsFlags, Characteristics, TRUE).c_str());
 }

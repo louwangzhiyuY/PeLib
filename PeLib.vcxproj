@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="CoffHeader.h" />
     <ClInclude Include="DosHeader.h" />
+    <ClInclude Include="Export.h" />
     <ClInclude Include="Import.h" />
     <ClInclude Include="OptionalHeader.h" />
     <ClInclude Include="PeCommon.h" />
@@ -101,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="CoffHeader.cpp" />
     <ClCompile Include="DosHeader.cpp" />
+    <ClCompile Include="Export.cpp" />
     <ClCompile Include="Import.cpp" />
     <ClCompile Include="OptionalHeader.cpp" />
     <ClCompile Include="PeCommon.cpp" />

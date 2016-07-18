@@ -83,22 +83,20 @@ void Section::DumpSection(const PeFile& peFile)
 
 void Section::DumpSectionHeader(const PeFile& /* peFile */)
 {
-	printf("    %-30s: %s\n",  "Name",                 (char *)&Name);
-    printf("    %-30s: %lx\n", "VirtualSize",          VirtualSize);
-    printf("    %-30s: %lx\n", "VirtualAddress",       VirtualAddress);
-    printf("    %-30s: %lx\n", "SizeOfRawData",        SizeOfRawData);
-    printf("    %-30s: %lx\n", "PointerToRawData",     PointerToRawData);
-    printf("    %-30s: %lx\n", "PointerToRelocations", PointerToRelocations);
-    printf("    %-30s: %lx\n", "PointerToLinenumbers", PointerToLinenumbers);
-    printf("    %-30s: %x\n",  "NumberOfRelocations",  NumberOfRelocations);
-    printf("    %-30s: %x\n",  "NumberOfLinenumbers",  NumberOfLinenumbers);
-    printf("    %-30s: %s\n",  "Characteristics",      ValueToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
+	printf("    %-30s: %s\n",    "Name",                 (char *)&Name);
+    printf("    %-30s: %lx\n",   "VirtualSize",          VirtualSize);
+    printf("    %-30s: %#.lx\n", "VirtualAddress",       VirtualAddress);
+    printf("    %-30s: %lx\n",   "SizeOfRawData",        SizeOfRawData);
+    printf("    %-30s: %#.lx\n", "PointerToRawData",     PointerToRawData);
+    printf("    %-30s: %#.lx\n", "PointerToRelocations", PointerToRelocations);
+    printf("    %-30s: %#.lx\n", "PointerToLinenumbers", PointerToLinenumbers);
+    printf("    %-30s: %x\n",    "NumberOfRelocations",  NumberOfRelocations);
+    printf("    %-30s: %x\n",    "NumberOfLinenumbers",  NumberOfLinenumbers);
+    printf("    %-30s: %s\n",    "Characteristics",      ValueToDescription(SectionCharacteristicsFlags, Characteristics, TRUE).c_str());
 }
 
 void Section::DumpSectionBody(const PeFile& peFile)
 {
-    if (SectionContentSize > 0) {
-        cout << "Dumping Section...first few bytes" << endl;
+    if (SectionContentSize > 0)
         HexDump(peFile.GetPeFilePath(), SectionContentFileAddress, min(SectionContentSize, 32));
-    }
 }
